@@ -46,7 +46,8 @@ export default function AdminLessonsPage() {
     } else {
       const lesson = adminLessons[Number(selectedLessonIndex)];
       if (lesson) {
-        setCourseSlug(lesson.courseSlug || (lesson as any).course_slug || '');
+        const rawLesson = lesson as Lesson & { course_slug?: string };
+        setCourseSlug(lesson.courseSlug || rawLesson.course_slug || '');
         setSlug(lesson.slug || '');
         setTitle(lesson.title || '');
         setDescription(lesson.description || '');
@@ -83,9 +84,10 @@ export default function AdminLessonsPage() {
       try {
         finalVideoPath = await lmsService.uploadLessonVideo(selectedFile, free === 1);
         setVideoPath(finalVideoPath);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setLoading(false);
-        setFeedback({ type: 'fail', text: err.message || 'Erro no upload do vídeo' });
+        const msg = err instanceof Error ? err.message : 'Erro no upload do vídeo';
+        setFeedback({ type: 'fail', text: msg });
         return;
       }
     }
@@ -114,8 +116,9 @@ export default function AdminLessonsPage() {
 
       setFeedback({ type: 'ok', text: 'Aula cadastrada/atualizada com sucesso!' });
       await loadLessons();
-    } catch (err: any) {
-      setFeedback({ type: 'fail', text: err.message || 'Erro ao salvar aula' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao salvar aula';
+      setFeedback({ type: 'fail', text: msg });
     } finally {
       setLoading(false);
       setTimeout(() => setFeedback(null), 4000);
@@ -166,11 +169,14 @@ export default function AdminLessonsPage() {
             onChange={(e) => setSelectedLessonIndex(e.target.value)}
           >
             <option value="new">+ Cadastrar Nova Aula</option>
-            {adminLessons.map((lesson, idx) => (
-              <option key={lesson.id || idx} value={idx}>
-                {lesson.courseSlug || (lesson as any).course_slug} - {lesson.slug}
-              </option>
-            ))}
+            {adminLessons.map((lesson, idx) => {
+              const raw = lesson as Lesson & { course_slug?: string };
+              return (
+                <option key={lesson.id || idx} value={idx}>
+                  {lesson.courseSlug || raw.course_slug} - {lesson.slug}
+                </option>
+              );
+            })}
           </select>
         </div>
 

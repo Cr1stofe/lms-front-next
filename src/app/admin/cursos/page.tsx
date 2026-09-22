@@ -70,8 +70,9 @@ export default function AdminCoursesPage() {
       await lmsService.upsertCourse(validation.data);
       setFeedback({ type: 'ok', text: 'Curso salvo com sucesso!' });
       await fetchCourses();
-    } catch (err: any) {
-      setFeedback({ type: 'fail', text: err.message || 'Erro ao salvar curso' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao salvar curso';
+      setFeedback({ type: 'fail', text: msg });
     } finally {
       setLoading(false);
       setTimeout(() => setFeedback(null), 4000);
