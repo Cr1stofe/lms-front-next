@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { resetPasswordSchema } from '@/lib/schemas/auth';
 import { KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
 
 function ResetPasswordForm() {
@@ -21,16 +22,18 @@ function ResetPasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('As senhas não coincidem');
+    setError('');
+
+    const validation = resetPasswordSchema.safeParse({ token, password, confirmPassword });
+    if (!validation.success) {
+      setError(validation.error.issues[0]?.message || 'Preencha os campos corretamente');
       return;
     }
 
-    setError('');
     setLoading(true);
 
     try {
-      await resetPassword(token, password);
+      await resetPassword(validation.data.token, validation.data.password);
       setSuccess(true);
     } catch {
       setError('Falha ao redefinir a senha');

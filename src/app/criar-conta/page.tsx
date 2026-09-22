@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { registerSchema } from '@/lib/schemas/auth';
 import { UserPlus, AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -20,10 +21,22 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    const validation = registerSchema.safeParse({ name, username, email, password });
+    if (!validation.success) {
+      setError(validation.error.issues[0]?.message || 'Preencha todos os campos corretamente');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const res = await register(name, username, email, password);
+      const res = await register(
+        validation.data.name,
+        validation.data.username,
+        validation.data.email,
+        validation.data.password
+      );
       if (res.success) {
         router.push('/login');
       } else {
