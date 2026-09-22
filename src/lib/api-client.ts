@@ -1,4 +1,4 @@
-export const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://localhost/api').replace(/\/$/, '');
+export const API_BASE = '/api';
 export const FILES_BASE = (process.env.NEXT_PUBLIC_FILES_URL || 'https://localhost').replace(/\/$/, '');
 
 export function resolveVideoUrl(videoPath: string): string {
@@ -13,8 +13,9 @@ export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ data: T; response: Response }> {
-  const url = `${API_BASE}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-  
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = cleanEndpoint.startsWith('/api') ? cleanEndpoint : `/api${cleanEndpoint}`;
+
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && !(options.body instanceof FormData) && !(options.body instanceof Blob)) {
     headers.set('Content-Type', 'application/json');
@@ -35,7 +36,7 @@ export async function apiRequest<T = any>(
   }
 
   if (!response.ok) {
-    const errorMsg = data?.title || data?.message || `Erro ${response.status}: ${response.statusText}`;
+    const errorMsg = data?.error || data?.title || data?.message || `Erro ${response.status}: ${response.statusText}`;
     const err = new Error(errorMsg) as any;
     err.status = response.status;
     err.data = data;

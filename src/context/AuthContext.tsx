@@ -55,11 +55,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      await apiRequest('/auth/login', {
+      const { data } = await apiRequest('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      const activeRole = await refreshSession();
+      const activeRole = (data?.role || await refreshSession()) as Role;
+      setRole(activeRole);
+      if (data?.user) {
+        setUser(data.user);
+      }
       return { success: true, role: activeRole };
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao realizar login' };
