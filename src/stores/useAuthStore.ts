@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User, Role } from '@/lib/types';
-import { apiRequest } from '@/lib/api-client';
+import { authService } from '@/services/authService';
 
 interface AuthState {
   user: User | null;
@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   refreshSession: async (): Promise<Role> => {
     try {
-      const { data } = await apiRequest<{ role: Role; title?: string; email?: string; name?: string; username?: string }>('/auth/session');
+      const { data } = await authService.getSession();
       const userRole = (data?.role || 'public').toLowerCase() as Role;
       
       const userObj = userRole !== 'public' ? {
@@ -41,10 +41,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async (email: string, password: string) => {
     try {
-      const { data } = await apiRequest<{ role?: Role; user?: User }>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      });
+      const { data } = await authService.login(email, password);
       
       const activeRole = (data?.role || await get().refreshSession()) as Role;
       set({
@@ -66,10 +63,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   register: async (name: string, username: string, email: string, password: string) => {
     try {
-      await apiRequest('/auth/user', {
-        method: 'POST',
-        body: JSON.stringify({ name, username, email, password }),
-      });
+      await authService.register(name, username, email, password);
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao criar conta' };
@@ -78,9 +72,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   logout: async () => {
     try {
-      await apiRequest('/auth/logout', {
-        method: 'DELETE',
-      });
+      await authService.logout();
     } catch (e) {
       console.error('Erro ao efetuar logout', e);
     } finally {
@@ -90,10 +82,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   requestPasswordReset: async (email: string) => {
     try {
-      await apiRequest('/auth/password/forgot', {
-        method: 'POST',
-        body: JSON.stringify({ email }),
-      });
+      await authService.forgotPassword(email);
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao solicitar recuperação' };
@@ -102,10 +91,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   resetPassword: async (token: string, password: string) => {
     try {
-      await apiRequest('/auth/password/reset', {
-        method: 'POST',
-        body: JSON.stringify({ token, new_password: password }),
-      });
+      await authService.resetPassword(token, password);
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao redefinir senha' };

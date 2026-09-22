@@ -2,25 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useLMSStore } from '@/stores/useLMSStore';
+import { lmsService } from '@/services/lmsService';
 import { API_BASE } from '@/lib/api-client';
 import { Certificate } from '@/lib/types';
 import { Award, ExternalLink, Loader2, BookOpen } from 'lucide-react';
 
 export default function CertificatesPage() {
-  const getCertificates = useLMSStore((state) => state.getCertificates);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadCerts() {
       setLoading(true);
-      const data = await getCertificates();
+      const data = await lmsService.getCertificates();
       setCertificates(data);
       setLoading(false);
     }
     loadCerts();
-  }, [getCertificates]);
+  }, []);
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>

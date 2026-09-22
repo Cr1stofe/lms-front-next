@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLMSStore } from '@/stores/useLMSStore';
+import { lmsService } from '@/services/lmsService';
 import { User } from '@/lib/types';
 import { Search, Users, Shield, User as UserIcon, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 export default function AdminUsersPage() {
-  const searchUsers = useLMSStore((state) => state.searchUsers);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
@@ -16,12 +15,12 @@ export default function AdminUsersPage() {
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    const result = await searchUsers(query, page);
+    const result = await lmsService.searchUsers(query, page);
     setUsers(result.users);
     setTotal(result.total);
     setTotalPages(result.totalPages);
     setLoading(false);
-  }, [query, page, searchUsers]);
+  }, [query, page]);
 
   useEffect(() => {
     fetchUsers();

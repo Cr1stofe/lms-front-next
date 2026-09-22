@@ -2,7 +2,7 @@
 
 import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useLMSStore } from '@/stores/useLMSStore';
+import { lmsService } from '@/services/lmsService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import VideoPlayer from '@/components/VideoPlayer';
 import { secToMin } from '@/lib/utils';
@@ -22,8 +22,6 @@ interface LessonPageProps {
 
 export default function LessonPlayerPage({ params }: LessonPageProps) {
   const { courseSlug, lessonSlug } = use(params);
-  const getLessonBySlugs = useLMSStore((state) => state.getLessonBySlugs);
-  const completeLesson = useLMSStore((state) => state.completeLesson);
   const role = useAuthStore((state) => state.role);
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -33,13 +31,13 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
   const loadLesson = useCallback(async () => {
     setLoading(true);
-    const data = await getLessonBySlugs(courseSlug, lessonSlug);
+    const data = await lmsService.getLessonBySlugs(courseSlug, lessonSlug);
     if (data) {
       setLesson(data);
       setCompleted(Boolean(data.completed));
     }
     setLoading(false);
-  }, [courseSlug, lessonSlug, getLessonBySlugs]);
+  }, [courseSlug, lessonSlug]);
 
   useEffect(() => {
     loadLesson();
@@ -58,7 +56,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
     return (
       <div className="glass-card text-center animate-fade-in" style={{ padding: '3.5rem 1.5rem' }}>
         <h2 style={{ marginBottom: '1rem' }}>Aula não encontrada</h2>
-        <p style={{ marginBottom: '2rem' }}>A aula requisitada não foi localizada no catálogo.</p>
+        <p style={{ marginBottom: '2rem' }}>A aula requisitada não foi localizada.</p>
         <Link href={`/cursos/${courseSlug}`} className="btn btn-primary">
           <ArrowLeft size={16} /> Voltar para o Curso
         </Link>
@@ -70,7 +68,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
     const courseId = lesson.course_id || lesson.courseId;
     if (!courseId || completed) return;
     setCompleting(true);
-    const success = await completeLesson(courseId, lesson.id);
+    const success = await lmsService.completeLesson(courseId, lesson.id);
     if (success) {
       setCompleted(true);
     }

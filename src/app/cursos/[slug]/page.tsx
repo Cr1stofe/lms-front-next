@@ -2,7 +2,7 @@
 
 import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useLMSStore } from '@/stores/useLMSStore';
+import { lmsService } from '@/services/lmsService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { secToMin } from '@/lib/utils';
 import ProgressBar from '@/components/ProgressBar';
@@ -24,8 +24,6 @@ interface CourseDetailsProps {
 
 export default function CourseDetailPage({ params }: CourseDetailsProps) {
   const { slug } = use(params);
-  const getCourseBySlug = useLMSStore((state) => state.getCourseBySlug);
-  const resetCourseProgress = useLMSStore((state) => state.resetCourseProgress);
   const role = useAuthStore((state) => state.role);
 
   const [course, setCourse] = useState<Course | null>(null);
@@ -35,14 +33,14 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
   const loadCourseData = useCallback(async () => {
     setLoading(true);
-    const data = await getCourseBySlug(slug);
+    const data = await lmsService.getCourseBySlug(slug);
     if (data) {
       setCourse(data.course);
       setLessons(data.lessons || []);
       setCompleted(data.completed || []);
     }
     setLoading(false);
-  }, [slug, getCourseBySlug]);
+  }, [slug]);
 
   useEffect(() => {
     loadCourseData();
@@ -76,7 +74,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
   const handleReset = async () => {
     if (confirm('Tem certeza que deseja reiniciar o progresso deste curso?')) {
-      const ok = await resetCourseProgress(course.id);
+      const ok = await lmsService.resetCourseProgress(course.id);
       if (ok) {
         await loadCourseData();
       }
