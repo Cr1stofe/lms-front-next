@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         'x-total-count': totalCount,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json([], { status: 500 });
   }
 }

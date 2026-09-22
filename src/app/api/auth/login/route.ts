@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const sid = extractSid(setCookieHeaders);
 
     let userRole = 'user';
-    let userData: any = null;
+    let userData: Record<string, unknown> | null = null;
 
     if (sid) {
       const sessionRes = await fetch(`${BACKEND_URL}/auth/session`, {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (sessionRes.ok) {
-        userData = await sessionRes.json().catch(() => ({}));
+        userData = (await sessionRes.json().catch(() => ({}))) as Record<string, unknown>;
         userRole = String(userData?.role || 'user').toLowerCase();
       }
     }
@@ -86,13 +86,13 @@ export async function POST(request: NextRequest) {
       success: true,
       role: userRole,
       user: {
-        name: userData?.name || (userRole === 'admin' ? 'Administrador' : 'Aluno'),
+        name: (userData?.name as string) || (userRole === 'admin' ? 'Administrador' : 'Aluno'),
         email: body.email,
-        username: userData?.username || body.email.split('@')[0],
+        username: (userData?.username as string) || body.email.split('@')[0],
         role: userRole,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('BFF Login Error:', error);
     return NextResponse.json(
       { success: false, error: 'Falha na comunicação com o servidor de autenticação' },

@@ -25,7 +25,7 @@ async function handleFilesProxy(request: NextRequest, { params }: { params: Prom
       headers['Content-Type'] = request.headers.get('content-type')!;
     }
 
-    let body: any = undefined;
+    let body: BodyInit | undefined = undefined;
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       body = await request.blob();
     }
@@ -49,9 +49,10 @@ async function handleFilesProxy(request: NextRequest, { params }: { params: Prom
         'Content-Type': contentType || 'application/octet-stream',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('BFF Files Proxy Error:', error);
-    return NextResponse.json({ error: error.message || 'Erro no gateway de arquivos' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Erro no gateway de arquivos';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

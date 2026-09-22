@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Link from 'next/link';
 import { AlertTriangle, RotateCcw, Home } from 'lucide-react';
 import styles from '@/styles/error-pages.module.scss';
 import '@/styles/globals.scss';
@@ -43,10 +44,10 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                     <RotateCcw size={18} />
                     <span>Reiniciar Aplicação</span>
                   </button>
-                  <a href="/" className={styles.secondaryBtn}>
+                  <Link href="/" className={styles.secondaryBtn}>
                     <Home size={18} />
                     <span>Ir para o Início</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

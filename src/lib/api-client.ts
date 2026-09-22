@@ -9,7 +9,7 @@ export function resolveVideoUrl(videoPath: string): string {
   return `/api/files/${cleanPath}`;
 }
 
-export async function apiRequest<T = any>(
+export async function apiRequest<T = unknown>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ data: T; response: Response }> {
@@ -27,17 +27,22 @@ export async function apiRequest<T = any>(
     credentials: 'include',
   });
 
-  let data: any = null;
+  let data: T;
   const contentType = response.headers.get('content-type') || '';
   if (contentType.includes('application/json') || contentType.includes('application/problem+json')) {
     data = await response.json().catch(() => null);
   } else {
-    data = await response.text().catch(() => null);
+    data = (await response.text().catch(() => '')) as unknown as T;
   }
 
   if (!response.ok) {
-    const errorMsg = data?.error || data?.title || data?.message || `Erro ${response.status}: ${response.statusText}`;
-    const err = new Error(errorMsg) as any;
+    const errorPayload = typeof data === 'object' && data !== null ? (data as Record<string, unknown>) : {};
+    const errorMsg =
+      (errorPayload.error as string) ||
+      (errorPayload.title as string) ||
+      (errorPayload.message as string) ||
+      `Erro ${response.status}: ${response.statusText}`;
+    const err = new Error(errorMsg) as Error & { status?: number; data?: unknown };
     err.status = response.status;
     err.data = data;
     throw err;

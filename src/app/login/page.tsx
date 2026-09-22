@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { loginSchema } from '@/lib/schemas/auth';
 import { LogIn, AlertCircle } from 'lucide-react';
@@ -15,7 +15,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect');
 

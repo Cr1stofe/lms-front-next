@@ -56,8 +56,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
 
       return { success: true, role: activeRole };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Erro ao realizar login' };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro ao realizar login';
+      return { success: false, error: msg };
     }
   },
 
@@ -65,8 +66,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await authService.register(name, username, email, password);
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Erro ao criar conta' };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro ao criar conta';
+      return { success: false, error: msg };
     }
   },
 
@@ -84,8 +86,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await authService.forgotPassword(email);
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Erro ao solicitar recuperação' };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro ao solicitar recuperação';
+      return { success: false, error: msg };
     }
   },
 
@@ -93,8 +96,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await authService.resetPassword(token, password);
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Erro ao redefinir senha' };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro ao redefinir senha';
+      return { success: false, error: msg };
     }
   },
 }));

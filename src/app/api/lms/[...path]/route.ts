@@ -16,7 +16,7 @@ async function handleLmsProxy(request: NextRequest, { params }: { params: Promis
       Cookie: sid ? `__Secure-sid=${sid}` : '',
     };
 
-    let body: any = undefined;
+    let body: BodyInit | undefined = undefined;
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       const contentType = request.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
@@ -49,9 +49,10 @@ async function handleLmsProxy(request: NextRequest, { params }: { params: Promis
 
     const data = await res.json().catch(() => null);
     return NextResponse.json(data, { status: res.status });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('BFF LMS Proxy Error:', error);
-    return NextResponse.json({ error: error.message || 'Erro no gateway LMS' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Erro no gateway LMS';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

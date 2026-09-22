@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { resetPasswordSchema } from '@/lib/schemas/auth';
 import { KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -11,7 +11,6 @@ import styles from '@/styles/auth-forms.module.scss';
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') || '';
-  const router = useRouter();
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
