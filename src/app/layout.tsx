@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { Outfit, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
 import '@/styles/globals.css';
-import { AuthProvider } from '@/context/AuthContext';
-import { LMSProvider } from '@/context/LMSContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SessionInitializer from '@/components/SessionInitializer';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -43,15 +42,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable} ${playfair.variable}`}>
       <body>
-        <AuthProvider>
-          <LMSProvider>
-            <div className="app-container">
-              <Navbar />
-              <main className="main-content">{children}</main>
-              <Footer />
-            </div>
-          </LMSProvider>
-        </AuthProvider>
+        <SessionInitializer />
+        <div className="app-container">
+          <Navbar />
+          <main className="main-content">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

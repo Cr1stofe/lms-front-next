@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
 
 function ResetPasswordForm() {
@@ -17,7 +17,7 @@ function ResetPasswordForm() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { resetPassword } = useAuth();
+  const resetPassword = useAuthStore((state) => state.resetPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

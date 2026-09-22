@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useLMS } from '@/context/LMSContext';
-import { useAuth } from '@/context/AuthContext';
+import { useLMSStore } from '@/stores/useLMSStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import CourseCard from '@/components/CourseCard';
 import { Search, BookOpen, Clock, Award } from 'lucide-react';
 
 export default function CoursesPage() {
-  const { courses } = useLMS();
-  const { role } = useAuth();
+  const courses = useLMSStore((state) => state.courses);
+  const role = useAuthStore((state) => state.role);
   const [search, setSearch] = useState('');
 
   const filtered = courses.filter(

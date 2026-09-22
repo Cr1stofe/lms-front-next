@@ -2,14 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { useLMS } from '@/context/LMSContext';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useLMSStore } from '@/stores/useLMSStore';
 import CourseCard from '@/components/CourseCard';
 import { Sparkles, ArrowRight, BookOpen, Award, CheckCircle } from 'lucide-react';
 
 export default function HomePage() {
-  const { role } = useAuth();
-  const { courses } = useLMS();
+  const role = useAuthStore((state) => state.role);
+  const courses = useLMSStore((state) => state.courses);
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>

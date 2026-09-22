@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useLMS } from '@/context/LMSContext';
+import { useLMSStore } from '@/stores/useLMSStore';
+import { lmsService } from '@/services/lmsService';
 import { slugify } from '@/lib/utils';
 import { PlusCircle, Save, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function AdminCoursesPage() {
-  const { courses, fetchCourses, upsertCourse } = useLMS();
+  const courses = useLMSStore((state) => state.courses);
+  const fetchCourses = useLMSStore((state) => state.fetchCourses);
 
   const [selectedCourseIndex, setSelectedCourseIndex] = useState<string>('new');
   const [slug, setSlug] = useState('');
@@ -50,7 +52,7 @@ export default function AdminCoursesPage() {
     setFeedback(null);
 
     try {
-      await upsertCourse({
+      await lmsService.upsertCourse({
         slug,
         title,
         description,
