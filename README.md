@@ -26,7 +26,7 @@ Plataforma moderna de cursos online construída com **Next.js 16**, **React 19**
 
 - **Persistência e Conectividade Híbrida:**
   - **Modo Estático / Local (Padrão):** Opera com persistência reativa em `localStorage`, pré-populado com os cursos, aulas, usuários e certificados do seed oficial.
-  - **Conexão com Backend NestJS:** Basta definir a variável `NEXT_PUBLIC_API_URL` no `.env.local` quando o backend estiver publicado.
+  - **Conexão com Backend NestJS:** Basta definir a variável `BACKEND_API_URL` no `.env.local`.
 
 ---
 
@@ -43,12 +43,12 @@ Plataforma moderna de cursos online construída com **Next.js 16**, **React 19**
 
 1. **Instalar dependências:**
    ```bash
-   npm install
+   yarn install
    ```
 
 2. **Iniciar o servidor de desenvolvimento:**
    ```bash
-   npm run dev
+   yarn dev
    ```
 
 3. **Acessar a aplicação:**
@@ -56,12 +56,10 @@ Plataforma moderna de cursos online construída com **Next.js 16**, **React 19**
 
 ---
 
-## 🌐 Configuração do Backend (Opcional)
+## 🌐 Configuração do Backend
 
-Para conectar ao backend NestJS após o deploy:
-
-1. Crie um arquivo `.env.local`:
+1. Configure as variáveis em `.env.local`:
    ```env
-   NEXT_PUBLIC_API_URL=https://seu-backend.com/api
+   BACKEND_API_URL=https://localhost/api
    ```
-2. Reinicie o servidor de desenvolvimento (`npm run dev`).
+2. Inicie o servidor de desenvolvimento (`yarn dev`).

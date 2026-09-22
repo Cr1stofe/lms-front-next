@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLMSStore } from '@/stores/useLMSStore';
 import { lmsService } from '@/services/lmsService';
+import { upsertCourseSchema } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
 import { PlusCircle, Save, CheckCircle2, AlertCircle } from 'lucide-react';
 
@@ -47,18 +48,25 @@ export default function AdminCoursesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !slug) return;
-    setLoading(true);
     setFeedback(null);
 
+    const validation = upsertCourseSchema.safeParse({
+      slug,
+      title,
+      description,
+      lessons: lessonsCount,
+      hours,
+    });
+
+    if (!validation.success) {
+      setFeedback({ type: 'fail', text: validation.error.issues[0]?.message || 'Preencha os campos corretamente' });
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await lmsService.upsertCourse({
-        slug,
-        title,
-        description,
-        lessons: Number(lessonsCount),
-        hours: Number(hours),
-      });
+      await lmsService.upsertCourse(validation.data);
       setFeedback({ type: 'ok', text: 'Curso salvo com sucesso!' });
       await fetchCourses();
     } catch (err: any) {

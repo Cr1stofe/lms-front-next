@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { loginSchema } from '@/lib/schemas/auth';
 import { LogIn, AlertCircle } from 'lucide-react';
 
 function LoginForm() {
@@ -20,10 +21,17 @@ function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      setError(validation.error.issues[0]?.message || 'Preencha todos os campos corretamente');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const res = await login(email, password);
+      const res = await login(validation.data.email, validation.data.password);
       if (res.success) {
         let destination = '/cursos';
         if (redirectUrl) {

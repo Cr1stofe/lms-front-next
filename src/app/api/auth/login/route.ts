@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
-const BACKEND_URL = (process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://localhost/api').replace(/\/$/, '');
-
-if (process.env.NODE_ENV !== 'production') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-}
+import { loginSchema } from '@/lib/schemas/auth';
+import { BACKEND_URL } from '@/lib/config';
 
 function extractSid(setCookieHeaders: string[]): string | null {
   for (const header of setCookieHeaders) {
@@ -18,13 +14,21 @@ function extractSid(setCookieHeaders: string[]): string | null {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const validation = loginSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { success: false, error: validation.error.issues[0]?.message || 'Dados inválidos' },
+        { status: 400 }
+      );
+    }
 
     const backendRes = await fetch(`${BACKEND_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(validation.data),
     });
 
     const data = await backendRes.json().catch(() => ({}));

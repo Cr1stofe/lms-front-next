@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
-const BACKEND_URL = (process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://localhost/api').replace(/\/$/, '');
-
-if (process.env.NODE_ENV !== 'production') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-}
+import { BACKEND_URL } from '@/lib/config';
 
 async function handleFilesProxy(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {

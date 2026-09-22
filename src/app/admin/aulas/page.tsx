@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { lmsService } from '@/services/lmsService';
+import { upsertLessonSchema } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
 import { Lesson } from '@/lib/types';
 import { Video, Save, CheckCircle2, AlertCircle, PlusCircle, UploadCloud } from 'lucide-react';
@@ -72,28 +73,43 @@ export default function AdminLessonsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !slug || !courseSlug) return;
-    setLoading(true);
     setFeedback(null);
 
-    try {
-      let finalVideoPath = videoPath;
+    let finalVideoPath = videoPath;
 
-      if (selectedFile) {
+    if (selectedFile) {
+      setLoading(true);
+      try {
         finalVideoPath = await lmsService.uploadLessonVideo(selectedFile, free === 1);
         setVideoPath(finalVideoPath);
+      } catch (err: any) {
+        setLoading(false);
+        setFeedback({ type: 'fail', text: err.message || 'Erro no upload do vídeo' });
+        return;
       }
+    }
 
-      await lmsService.upsertLesson({
-        courseSlug,
-        slug,
-        title,
-        description,
-        seconds: Number(seconds),
-        order: Number(order),
-        free: Number(free),
-        video: finalVideoPath,
-      });
+    const validation = upsertLessonSchema.safeParse({
+      courseSlug,
+      slug,
+      title,
+      description,
+      seconds,
+      order,
+      free,
+      video: finalVideoPath,
+    });
+
+    if (!validation.success) {
+      setFeedback({ type: 'fail', text: validation.error.issues[0]?.message || 'Preencha os campos corretamente' });
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await lmsService.upsertLesson(validation.data);
 
       setFeedback({ type: 'ok', text: 'Aula cadastrada/atualizada com sucesso!' });
       await loadLessons();

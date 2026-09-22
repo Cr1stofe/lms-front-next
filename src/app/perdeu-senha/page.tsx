@@ -3,18 +3,28 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { forgotPasswordSchema } from '@/lib/schemas/auth';
+import { Mail, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const requestPasswordReset = useAuthStore((state) => state.requestPasswordReset);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    const validation = forgotPasswordSchema.safeParse({ email });
+    if (!validation.success) {
+      setError(validation.error.issues[0]?.message || 'Informe um e-mail válido');
+      return;
+    }
+
     setLoading(true);
-    await requestPasswordReset(email);
+    await requestPasswordReset(validation.data.email);
     setSubmitted(true);
     setLoading(false);
   };
@@ -59,6 +69,26 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+            {error && (
+              <div
+                style={{
+                  padding: '0.75rem 1rem',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: '#f87171',
+                  fontSize: '0.85rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: '1.25rem',
+                }}
+              >
+                <AlertCircle size={16} />
+                <span>{error}</span>
+              </div>
+            )}
+
             <div className="form-group">
               <label className="form-label" htmlFor="email-forgot">
                 E-mail Cadastrado

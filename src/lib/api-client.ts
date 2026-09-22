@@ -1,12 +1,12 @@
 export const API_BASE = '/api';
-export const FILES_BASE = (process.env.NEXT_PUBLIC_FILES_URL || 'https://localhost').replace(/\/$/, '');
 
 export function resolveVideoUrl(videoPath: string): string {
   if (!videoPath) return '';
   if (videoPath.startsWith('http://') || videoPath.startsWith('https://')) {
     return videoPath;
   }
-  return `${FILES_BASE}${videoPath.startsWith('/') ? '' : '/'}${videoPath}`;
+  const cleanPath = videoPath.replace(/^\/?files\//, '');
+  return `/api/files/${cleanPath}`;
 }
 
 export async function apiRequest<T = any>(
