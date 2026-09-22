@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { loginSchema } from '@/lib/schemas/auth';
 import { LogIn, AlertCircle } from 'lucide-react';
+import styles from '@/styles/auth-forms.module.scss';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -40,7 +41,6 @@ function LoginForm() {
           destination = '/admin/cursos';
         }
         
-        // Redireciona e atualiza a aplicação
         window.location.href = destination;
       } else {
         setError(res.error || 'Credenciais inválidas');
@@ -52,43 +52,35 @@ function LoginForm() {
     }
   };
 
+  const handleQuickLogin = (userEmail: string, userPass: string) => {
+    setEmail(userEmail);
+    setPassword(userPass);
+  };
+
   return (
-    <div className="container-narrow animate-fade-in" style={{ paddingTop: '1.5rem' }}>
-      <div className="glass-card">
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Login Conta</h1>
-          <p style={{ fontSize: '0.9rem' }}>Entre com seu e-mail e senha cadastrados</p>
+    <div className={`animate-fade-in ${styles.container}`}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Entrar na Conta</h1>
+          <p className={styles.subtitle}>Acesse suas aulas, cursos e certificados</p>
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: '0.75rem 1rem',
-              background: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
-              borderRadius: 'var(--radius-md)',
-              color: '#fca5a5',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: '1.5rem',
-            }}
-          >
+          <div className={styles.errorAlert}>
             <AlertCircle size={16} />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">
-              Email
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="email">
+              E-mail
             </label>
             <input
               id="email"
               type="email"
-              className="form-input"
+              className={styles.formInput}
               placeholder="seu.email@exemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -96,19 +88,22 @@ function LoginForm() {
             />
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label className="form-label" htmlFor="password">
+              <label className={styles.formLabel} htmlFor="password">
                 Senha
               </label>
-              <Link href="/perdeu-senha" style={{ fontSize: '0.75rem', color: '#818cf8' }}>
-                Recuperar Senha
+              <Link
+                href="/perdeu-senha"
+                style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}
+              >
+                Esqueceu a senha?
               </Link>
             </div>
             <input
               id="password"
               type="password"
-              className="form-input"
+              className={styles.formInput}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -116,17 +111,41 @@ function LoginForm() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1.5rem' }} disabled={loading}>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={loading}
+          >
             <LogIn size={18} />
-            <span>{loading ? 'Entrando...' : 'Login'}</span>
+            <span>{loading ? 'Entrando...' : 'Entrar na Plataforma'}</span>
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Não possui conta?{' '}
-          <Link href="/criar-conta" style={{ color: '#818cf8', fontWeight: 600 }}>
-            Criar conta
-          </Link>
+        {/* Quick Demo Logins */}
+        <div className={styles.quickLoginArea}>
+          <div className={styles.quickLoginLabel}>
+            Acessos Rápidos de Demonstração
+          </div>
+          <div className={styles.quickLoginButtons}>
+            <button
+              type="button"
+              className={styles.quickLoginBtn}
+              onClick={() => handleQuickLogin('aluno@lms.com', 'aluno123')}
+            >
+              Preencher como Aluno
+            </button>
+            <button
+              type="button"
+              className={styles.quickLoginBtn}
+              onClick={() => handleQuickLogin('admin@lms.com', 'admin123')}
+            >
+              Preencher como Admin
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.footerLinks}>
+          Não tem uma conta? <Link href="/criar-conta">Cadastre-se gratuitamente</Link>
         </div>
       </div>
     </div>
@@ -135,7 +154,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="text-center" style={{ padding: '3rem' }}>Carregando...</div>}>
+    <Suspense fallback={<div className="glass-card text-center" style={{ padding: '3rem' }}>Carregando formulário...</div>}>
       <LoginForm />
     </Suspense>
   );

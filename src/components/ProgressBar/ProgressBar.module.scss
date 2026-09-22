@@ -1,0 +1,38 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  @include flex-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $text-secondary;
+}
+
+.track {
+  width: 100%;
+  height: 6px;
+  border-radius: $radius-pill;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.bar {
+  height: 100%;
+  border-radius: $radius-pill;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: $gradient-btn;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+
+  &.completed {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+}

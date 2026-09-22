@@ -1,0 +1,97 @@
+// ==========================================
+// Design Tokens & SCSS Variables
+// ==========================================
+
+// Typography Fonts
+$font-display: var(--font-outfit), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-body: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
+$font-serif: var(--font-playfair), Georgia, serif;
+
+// Colors & Surfaces
+$bg-main: #09090b;
+$bg-surface: #121318;
+$bg-surface-elevated: #181920;
+$bg-surface-glass: rgba(24, 25, 32, 0.75);
+
+$border-subtle: rgba(255, 255, 255, 0.08);
+$border-hover: rgba(255, 255, 255, 0.2);
+$border-active: rgba(99, 102, 241, 0.5);
+$color-border-subtle: $border-subtle;
+$color-border-light: rgba(255, 255, 255, 0.15);
+
+$text-primary: #f4f4f5;
+$text-secondary: #a1a1aa;
+$text-muted: #71717a;
+$color-text-primary: $text-primary;
+$color-text-secondary: $text-secondary;
+$color-text-muted: $text-muted;
+
+// Accents & Palettes
+$accent-primary: #6366f1;
+$accent-indigo-light: #818cf8;
+$color-indigo-400: #818cf8;
+$color-indigo-500: #6366f1;
+
+$accent-cyan: #06b6d4;
+$color-cyan-400: #38bdf8;
+$color-cyan-500: #06b6d4;
+
+$accent-emerald: #10b981;
+$accent-emerald-light: #34d399;
+$color-emerald-400: #34d399;
+$color-emerald-500: #10b981;
+
+$accent-amber: #f59e0b;
+$accent-amber-light: #fbbf24;
+$color-amber-400: #fbbf24;
+$color-amber-500: #f59e0b;
+
+$accent-rose: #f43f5e;
+$accent-rose-light: #f87171;
+$color-rose-400: #f87171;
+$color-rose-500: #f43f5e;
+
+// Gradients
+$gradient-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+$gradient-btn: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+$gradient-emerald: linear-gradient(135deg, #059669 0%, #10b981 100%);
+$gradient-pill: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+$gradient-pill-hover: linear-gradient(to bottom, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+
+// Shadows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+$shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+$shadow-glow: 0 0 30px rgba(99, 102, 241, 0.2);
+$shadow-btn: 0 4px 16px rgba(99, 102, 241, 0.35);
+$shadow-btn-hover: 0 6px 20px rgba(99, 102, 241, 0.5);
+
+// Radii
+$radius-xs: 4px;
+$radius-sm: 8px;
+$radius-md: 14px;
+$radius-lg: 20px;
+$radius-xl: 28px;
+$radius-pill: 9999px;
+
+// Spacing Scale
+$spacing-1: 0.25rem;  // 4px
+$spacing-2: 0.5rem;   // 8px
+$spacing-3: 0.75rem;  // 12px
+$spacing-4: 1rem;     // 16px
+$spacing-5: 1.25rem;  // 20px
+$spacing-6: 1.5rem;   // 24px
+$spacing-8: 2rem;     // 32px
+$spacing-10: 2.5rem;  // 40px
+$spacing-12: 3rem;    // 48px
+$spacing-16: 4rem;    // 64px
+
+// Transitions
+$transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1280px;

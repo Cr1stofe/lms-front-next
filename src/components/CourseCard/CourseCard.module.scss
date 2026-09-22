@@ -1,0 +1,56 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.card {
+  @include glass-interactive;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  @include flex-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.badgeIndigo {
+  @include badge-base;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: $accent-indigo-light;
+}
+
+.badgeDefault {
+  @include badge-base;
+}
+
+.title {
+  margin-bottom: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.footer {
+  @include flex-between;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid $border-subtle;
+}
+
+.statusText {
+  font-size: 0.85rem;
+  color: $text-muted;
+}
+
+.accessBtn {
+  @include button-primary;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+}

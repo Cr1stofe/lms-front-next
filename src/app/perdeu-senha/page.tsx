@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { forgotPasswordSchema } from '@/lib/schemas/auth';
 import { Mail, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
+import styles from '@/styles/auth-forms.module.scss';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -30,11 +31,11 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="container-narrow animate-fade-in" style={{ paddingTop: '1.5rem' }}>
-      <div className="glass-card">
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Recuperar Senha</h1>
-          <p style={{ fontSize: '0.9rem' }}>Informe seu e-mail para receber as instruções de recuperação</p>
+    <div className={`animate-fade-in ${styles.container}`}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Recuperar Senha</h1>
+          <p className={styles.subtitle}>Informe seu e-mail para receber as instruções de recuperação</p>
         </div>
 
         {submitted ? (
@@ -59,10 +60,10 @@ export default function ForgotPasswordPage() {
               Se o e-mail <strong>{email}</strong> estiver cadastrado, enviamos um link para redefinição.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link href="/resetar-senha?token=demo-token-123" className="btn btn-primary">
+              <Link href="/resetar-senha?token=demo-token-123" className={styles.submitBtn} style={{ margin: 0 }}>
                 Simular link de redefinição recebido
               </Link>
-              <Link href="/login" className="btn">
+              <Link href="/login" className="btn" style={{ width: '100%' }}>
                 Voltar para o Login
               </Link>
             </div>
@@ -70,33 +71,20 @@ export default function ForgotPasswordPage() {
         ) : (
           <form onSubmit={handleSubmit}>
             {error && (
-              <div
-                style={{
-                  padding: '0.75rem 1rem',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: '#f87171',
-                  fontSize: '0.85rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  marginBottom: '1.25rem',
-                }}
-              >
+              <div className={styles.errorAlert}>
                 <AlertCircle size={16} />
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="email-forgot">
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="email-forgot">
                 E-mail Cadastrado
               </label>
               <input
                 id="email-forgot"
                 type="email"
-                className="form-input"
+                className={styles.formInput}
                 placeholder="seu.email@exemplo.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -104,13 +92,13 @@ export default function ForgotPasswordPage() {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1.5rem' }} disabled={loading}>
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
               <Mail size={18} />
               <span>{loading ? 'Enviando...' : 'Enviar Link de Recuperação'}</span>
             </button>
 
-            <div style={{ textAlign: 'center', marginTop: '1.75rem' }}>
-              <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <div className={styles.footerLinks}>
+              <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <ArrowLeft size={14} /> Voltar para o Login
               </Link>
             </div>

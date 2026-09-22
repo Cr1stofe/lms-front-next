@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Outfit, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
-import '@/styles/globals.css';
+import '@/styles/globals.scss';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SessionInitializer from '@/components/SessionInitializer';

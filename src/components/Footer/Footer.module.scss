@@ -1,0 +1,35 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.footer {
+  border-top: 1px solid $border-subtle;
+  padding: 2rem 1.5rem;
+  margin-top: auto;
+  background: rgba(9, 9, 11, 0.95);
+  width: 100%;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: $text-muted;
+}
+
+.copyright {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge {
+  @include badge-base;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: $accent-emerald-light;
+}
