@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Course } from '@/lib/types';
 import { Clock, BookOpen, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import styles from './CourseCard.module.scss';
 
 interface CourseCardProps {
   course: Course;
@@ -14,29 +15,29 @@ export default function CourseCard({ course }: CourseCardProps) {
   const role = useAuthStore((state) => state.role);
 
   return (
-    <div className="glass-card glass-card-interactive" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-        <span className="badge badge-indigo">
+    <div className={styles.card}>
+      <div className={styles.header}>
+        <span className={styles.badgeIndigo}>
           <BookOpen size={12} /> {course.lessons} aulas
         </span>
-        <span className="badge">
+        <span className={styles.badgeDefault}>
           <Clock size={12} /> {course.hours} horas
         </span>
       </div>
 
-      <h3 style={{ marginBottom: '0.75rem', fontSize: '1.35rem' }}>{course.title}</h3>
-      <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+      <h3 className={styles.title}>{course.title}</h3>
+      <p className={styles.description}>
         {course.description}
       </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
-        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+      <div className={styles.footer}>
+        <span className={styles.statusText}>
           {role === 'user' ? 'Disponível' : 'Acesso Liberado'}
         </span>
 
         <Link
           href={`/cursos/${course.slug}`}
-          className="btn btn-sm btn-primary"
+          className={styles.accessBtn}
         >
           <span>{role === 'user' ? 'Acessar Curso' : 'Ver Curso'}</span>
           <ArrowRight size={14} />

@@ -5,7 +5,8 @@ import { lmsService } from '@/services/lmsService';
 import { upsertLessonSchema } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
 import { Lesson } from '@/lib/types';
-import { Video, Save, CheckCircle2, AlertCircle, PlusCircle, UploadCloud } from 'lucide-react';
+import { Save, CheckCircle2, AlertCircle, PlusCircle, UploadCloud } from 'lucide-react';
+import styles from '@/styles/admin.module.scss';
 
 export default function AdminLessonsPage() {
   const [adminLessons, setAdminLessons] = useState<Lesson[]>([]);
@@ -122,15 +123,15 @@ export default function AdminLessonsPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-      <div className="glass-card" style={{ padding: '2.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <span className="badge badge-indigo" style={{ marginBottom: '0.5rem' }}>
+    <div className={styles.adminContainer}>
+      <div className={styles.adminCard}>
+        <div className={styles.headerRow}>
+          <div className={styles.titleWrapper}>
+            <span className={`badge badge-indigo ${styles.badge}`}>
               Painel Administrativo
             </span>
-            <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Gerenciar Aulas</h1>
-            <p style={{ fontSize: '0.95rem' }}>Cadastre novas aulas em vídeo ou edite as aulas existentes dos cursos.</p>
+            <h1>Gerenciar Aulas</h1>
+            <p>Cadastre novas aulas em vídeo ou edite as aulas existentes dos cursos.</p>
           </div>
 
           <button
@@ -145,25 +146,15 @@ export default function AdminLessonsPage() {
 
         {feedback && (
           <div
-            style={{
-              padding: '0.75rem 1.25rem',
-              background: feedback.type === 'ok' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-              border: `1px solid ${feedback.type === 'ok' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
-              borderRadius: 'var(--radius-md)',
-              color: feedback.type === 'ok' ? '#34d399' : '#fca5a5',
-              fontSize: '0.9rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: '1.5rem',
-            }}
+            className={`${styles.feedbackMessage} ${
+              feedback.type === 'ok' ? styles.feedbackSuccess : styles.feedbackError
+            }`}
           >
             {feedback.type === 'ok' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
             <span>{feedback.text}</span>
           </div>
         )}
 
-        {/* Lesson selector dropdown */}
         <div className="form-group" style={{ marginBottom: '2rem' }}>
           <label className="form-label" htmlFor="lesson-select">
             Selecionar Aula para Edição
@@ -310,38 +301,20 @@ export default function AdminLessonsPage() {
 
           <div className="form-group" style={{ marginTop: '0.5rem' }}>
             <label className="form-label">Arquivo de Vídeo (Upload)</label>
-            <div
-              style={{
-                border: '2px dashed var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.5rem',
-                textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.02)',
-                cursor: 'pointer',
-                position: 'relative',
-              }}
-            >
+            <div className={styles.uploadDropzone}>
               <input
                 type="file"
                 accept="video/*"
                 onChange={handleFileChange}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  opacity: 0,
-                  cursor: 'pointer',
-                  width: '100%',
-                  height: '100%',
-                }}
               />
-              <UploadCloud size={24} style={{ color: '#818cf8', margin: '0 auto 0.5rem' }} />
-              <div style={{ fontSize: '0.9rem', color: '#ffffff' }}>
+              <UploadCloud size={24} className={styles.uploadIcon} />
+              <div className={styles.uploadText}>
                 {selectedFile ? `Arquivo selecionado: ${selectedFile.name}` : 'Selecionar arquivo de vídeo'}
               </div>
             </div>
           </div>
 
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <div className={styles.formActions}>
             <button type="submit" disabled={loading} className="btn btn-primary btn-lg">
               <Save size={18} />
               <span>{loading ? 'Salvando...' : 'Criar/Atualizar Aula'}</span>
@@ -352,3 +325,4 @@ export default function AdminLessonsPage() {
     </div>
   );
 }
+

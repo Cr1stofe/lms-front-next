@@ -1,0 +1,241 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.adminContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-10;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.adminCard {
+  @include glass-card;
+  padding: $spacing-10;
+
+  @include mobile {
+    padding: $spacing-6;
+  }
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-8;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+}
+
+.titleWrapper {
+  .badge {
+    margin-bottom: $spacing-2;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    font-family: $font-serif;
+    color: $color-text-primary;
+    letter-spacing: -0.02em;
+    margin-bottom: $spacing-2;
+
+    @include mobile {
+      font-size: 1.75rem;
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $color-text-secondary;
+  }
+}
+
+.statBadge {
+  padding: $spacing-3 $spacing-5;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: $radius-md;
+  border: 1px solid $color-border-subtle;
+  text-align: center;
+
+  .statNumber {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $color-cyan-400;
+    font-family: $font-serif;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+    color: $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.feedbackMessage {
+  padding: $spacing-3 $spacing-5;
+  border-radius: $radius-md;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-bottom: $spacing-6;
+
+  &.feedbackSuccess {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: $color-emerald-400;
+  }
+
+  &.feedbackError {
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    color: $color-rose-400;
+  }
+}
+
+.searchForm {
+  position: relative;
+  margin-bottom: $spacing-8;
+
+  .searchIcon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .searchInput {
+    padding-left: 3rem;
+    background: rgba(9, 9, 11, 0.6);
+  }
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-6;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: $radius-md;
+  border: 1px solid $color-border-subtle;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: $color-border-light;
+  }
+
+  .userInfo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.avatarAdmin {
+        background: rgba(99, 102, 241, 0.15);
+        color: $color-indigo-400;
+      }
+
+      &.avatarUser {
+        background: rgba(255, 255, 255, 0.05);
+        color: $color-text-secondary;
+      }
+    }
+
+    .userName {
+      font-weight: 600;
+      color: $color-text-primary;
+      font-size: 1.05rem;
+    }
+
+    .userEmail {
+      font-size: 0.85rem;
+      color: $color-text-muted;
+    }
+  }
+}
+
+.uploadDropzone {
+  border: 2px dashed $color-border-subtle;
+  border-radius: $radius-md;
+  padding: $spacing-6;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  position: relative;
+  transition: border-color $transition-fast, background $transition-fast;
+
+  &:hover {
+    border-color: $color-indigo-500;
+    background: rgba(99, 102, 241, 0.03);
+  }
+
+  input[type='file'] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .uploadIcon {
+    color: $color-indigo-400;
+    margin: 0 auto $spacing-2;
+  }
+
+  .uploadText {
+    font-size: 0.9rem;
+    color: $color-text-primary;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-2;
+  margin-top: $spacing-8;
+}
+
+.formActions {
+  margin-top: $spacing-8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-10 $spacing-4;
+  color: $color-text-muted;
+}
+
+.loadingState {
+  text-align: center;
+  padding: $spacing-12;
+  color: $color-text-secondary;
+
+  .spinner {
+    margin: 0 auto $spacing-4;
+    color: $color-indigo-400;
+  }
+}

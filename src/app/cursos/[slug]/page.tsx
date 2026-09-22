@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   Loader2,
 } from 'lucide-react';
+import styles from './course-detail.module.scss';
 
 interface CourseDetailsProps {
   params: Promise<{ slug: string }>;
@@ -82,56 +83,44 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div className={`animate-fade-in ${styles.container}`}>
       {/* Breadcrumbs */}
-      <nav className="breadcrumb">
+      <nav className={styles.breadcrumb}>
         <Link href="/cursos">Cursos</Link>
         <ChevronRight size={14} />
-        <span style={{ color: '#ffffff' }}>{course.title}</span>
+        <span className={styles.current}>{course.title}</span>
       </nav>
 
       {/* Course Hero Card */}
-      <div className="glass-card">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
-          <span className="badge badge-indigo">
+      <div className={styles.heroCard}>
+        <div className={styles.badgesRow}>
+          <span className={styles.badgeIndigo}>
             <BookOpen size={12} /> {lessons.length} aulas
           </span>
-          <span className="badge">
+          <span className={styles.badgeDefault}>
             <Clock size={12} /> {course.hours} horas
           </span>
           {isCompleted && (
-            <span className="badge badge-emerald">
+            <span className={styles.badgeEmerald}>
               <CheckCircle2 size={12} /> 100% Concluído
             </span>
           )}
         </div>
 
-        <h1 style={{ marginBottom: '0.75rem', textAlign: 'left' }}>{course.title}</h1>
-        <p style={{ fontSize: '1rem', lineHeight: 1.6, maxWidth: '720px', marginBottom: '1.75rem' }}>
+        <h1 className={styles.title}>{course.title}</h1>
+        <p className={styles.description}>
           {course.description}
         </p>
 
         {role === 'user' && (
-          <div style={{ marginBottom: '1.75rem', padding: '1.25rem', background: 'rgba(255, 255, 255, 0.02)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+          <div className={styles.progressContainer}>
             <ProgressBar progress={progress} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', fontSize: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div className={styles.progressMeta}>
               <span style={{ color: 'var(--text-muted)' }}>
                 {completedCount} de {lessons.length} aulas completadas
               </span>
               {completedCount > 0 && (
-                <button
-                  onClick={handleReset}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#f87171',
-                    cursor: 'pointer',
-                    fontSize: '0.8rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 4,
-                  }}
-                >
+                <button onClick={handleReset} className={styles.resetBtn}>
                   <RotateCcw size={12} /> Reiniciar Progresso
                 </button>
               )}
@@ -143,8 +132,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
           {firstUncompletedLesson && (
             <Link
               href={`/aula/${course.slug}/${firstUncompletedLesson.slug}`}
-              className="btn btn-primary btn-lg"
-              style={{ width: 'auto' }}
+              className={styles.startBtn}
             >
               <Play size={18} />
               <span>{progress > 0 && !isCompleted ? 'Continuar de Onde Parou' : 'Iniciar Curso'}</span>
@@ -155,12 +143,12 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
       {/* Curriculum / Lessons List */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div className={styles.curriculumHeader}>
           <h2>Grade Curricular</h2>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{lessons.length} aulas</span>
+          <span className={styles.curriculumCount}>{lessons.length} aulas</span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+        <div className={styles.lessonsList}>
           {lessons.map((lesson, idx) => {
             const isLessonDone = completed.some((x) => x.lesson_id == lesson.id || x.lessonId == lesson.id);
 
@@ -168,61 +156,28 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
               <Link
                 key={lesson.id}
                 href={`/aula/${course.slug}/${lesson.slug}`}
-                className="glass-card glass-card-interactive"
-                style={{
-                  padding: '1rem 1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '0.75rem',
-                  borderRadius: 'var(--radius-md)',
-                }}
+                className={styles.lessonItem}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
-                  <div
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: '50%',
-                      background: isLessonDone ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                      color: isLessonDone ? '#34d399' : 'var(--text-muted)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      flexShrink: 0,
-                    }}
-                  >
+                <div className={styles.lessonLeft}>
+                  <div className={`${styles.lessonNumber} ${isLessonDone ? styles.done : ''}`}>
                     {isLessonDone ? <CheckCircle2 size={16} /> : idx + 1}
                   </div>
 
-                  <div style={{ minWidth: 0 }}>
-                    <h3 style={{ fontSize: '1rem', marginBottom: '0.15rem', color: isLessonDone ? 'var(--text-secondary)' : '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div className={styles.lessonText}>
+                    <h3 className={`${styles.lessonTitle} ${isLessonDone ? styles.done : ''}`}>
                       {lesson.title}
                     </h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p className={styles.lessonDesc}>
                       {lesson.description}
                     </p>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-                  <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
+                <div className={styles.lessonRight}>
+                  <span className={styles.lessonDuration}>
                     {secToMin(lesson.seconds)}
                   </span>
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: '50%',
-                      background: 'rgba(255, 255, 255, 0.04)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--text-secondary)',
-                    }}
-                  >
+                  <div className={styles.chevronWrapper}>
                     <ChevronRight size={14} />
                   </div>
                 </div>

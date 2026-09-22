@@ -1,0 +1,174 @@
+@use './variables' as *;
+
+// ==========================================
+// SCSS Mixins & Helpers
+// ==========================================
+
+// Responsive Breakpoint Mixins
+@mixin mobile {
+  @media (max-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-desktop}) {
+    @content;
+  }
+}
+
+// Glassmorphism Card Mixin
+@mixin glass-card {
+  background: $bg-surface-glass;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  box-shadow: $shadow-md;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  width: 100%;
+
+  &:hover {
+    border-color: $border-hover;
+  }
+}
+
+@mixin glass-interactive {
+  @include glass-card;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-glow, $shadow-md;
+    border-color: $border-active;
+  }
+}
+
+// Flexbox Helpers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button Base Mixin
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: $font-display;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  border-radius: $radius-pill;
+  border: 1px solid $border-subtle;
+  background: $gradient-pill;
+  color: $text-primary;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+
+  &:hover {
+    background: $gradient-pill-hover;
+    border-color: $border-hover;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background: $gradient-btn;
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: $shadow-btn;
+
+  &:hover {
+    box-shadow: $shadow-btn-hover;
+    filter: brightness(1.1);
+  }
+}
+
+@mixin button-emerald {
+  @include button-base;
+  background: $gradient-emerald;
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+    filter: brightness(1.05);
+  }
+}
+
+// Input Base Mixin
+@mixin input-base {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-pill;
+  padding: 0.85rem 1.25rem;
+  color: $text-primary;
+  font-size: 0.95rem;
+  font-family: $font-body;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $accent-primary;
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+}
+
+// Badge Base Mixin
+@mixin badge-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: $radius-pill;
+  border: 1px solid $border-subtle;
+  background: rgba(255, 255, 255, 0.05);
+  color: $text-secondary;
+  white-space: nowrap;
+  font-family: $font-display;
+}

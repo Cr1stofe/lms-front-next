@@ -6,6 +6,7 @@ import { lmsService } from '@/services/lmsService';
 import { upsertCourseSchema } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
 import { PlusCircle, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import styles from '@/styles/admin.module.scss';
 
 export default function AdminCoursesPage() {
   const courses = useLMSStore((state) => state.courses);
@@ -78,15 +79,15 @@ export default function AdminCoursesPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-      <div className="glass-card" style={{ padding: '2.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <span className="badge badge-indigo" style={{ marginBottom: '0.5rem' }}>
+    <div className={styles.adminContainer}>
+      <div className={styles.adminCard}>
+        <div className={styles.headerRow}>
+          <div className={styles.titleWrapper}>
+            <span className={`badge badge-indigo ${styles.badge}`}>
               Painel Administrativo
             </span>
-            <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Gerenciar Cursos</h1>
-            <p style={{ fontSize: '0.95rem' }}>Crie novos cursos ou edite as informações de cursos existentes.</p>
+            <h1>Gerenciar Cursos</h1>
+            <p>Crie novos cursos ou edite as informações de cursos existentes.</p>
           </div>
 
           <button
@@ -101,25 +102,15 @@ export default function AdminCoursesPage() {
 
         {feedback && (
           <div
-            style={{
-              padding: '0.75rem 1.25rem',
-              background: feedback.type === 'ok' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-              border: `1px solid ${feedback.type === 'ok' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
-              borderRadius: 'var(--radius-md)',
-              color: feedback.type === 'ok' ? '#34d399' : '#fca5a5',
-              fontSize: '0.9rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: '1.5rem',
-            }}
+            className={`${styles.feedbackMessage} ${
+              feedback.type === 'ok' ? styles.feedbackSuccess : styles.feedbackError
+            }`}
           >
             {feedback.type === 'ok' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
             <span>{feedback.text}</span>
           </div>
         )}
 
-        {/* Course selector dropdown */}
         <div className="form-group" style={{ marginBottom: '2rem' }}>
           <label className="form-label" htmlFor="course-select">
             Selecionar Curso para Edição
@@ -217,7 +208,7 @@ export default function AdminCoursesPage() {
             </div>
           </div>
 
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <div className={styles.formActions}>
             <button type="submit" disabled={loading} className="btn btn-primary btn-lg">
               <Save size={18} />
               <span>{loading ? 'Salvando...' : 'Criar/Atualizar Curso'}</span>
@@ -228,3 +219,4 @@ export default function AdminCoursesPage() {
     </div>
   );
 }
+

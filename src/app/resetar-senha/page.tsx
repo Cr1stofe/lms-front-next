@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { resetPasswordSchema } from '@/lib/schemas/auth';
 import { KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
+import styles from '@/styles/auth-forms.module.scss';
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -43,32 +44,12 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="container-narrow animate-fade-in" style={{ paddingTop: '1.5rem' }}>
-      <div className="glass-card">
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Redefinir Senha</h1>
-          <p style={{ fontSize: '0.9rem' }}>Digite sua nova senha para acessar a conta</p>
+    <div className={`animate-fade-in ${styles.container}`}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Redefinir Senha</h1>
+          <p className={styles.subtitle}>Crie uma nova senha de acesso</p>
         </div>
-
-        {error && (
-          <div
-            style={{
-              padding: '0.75rem 1rem',
-              background: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
-              borderRadius: 'var(--radius-md)',
-              color: '#fca5a5',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: '1.5rem',
-            }}
-          >
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
 
         {success ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
@@ -87,24 +68,38 @@ function ResetPasswordForm() {
             >
               <CheckCircle2 size={32} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>Senha Alterada!</h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-              Sua senha foi redefinida com sucesso. Você já pode fazer login.
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>Senha Alterada com Sucesso!</h3>
+            <p style={{ fontSize: '0.9rem', marginBottom: '1.75rem' }}>
+              Sua senha foi redefinida. Agora você já pode entrar na sua conta.
             </p>
-            <Link href="/login" className="btn btn-primary btn-full">
+            <Link href="/login" className={styles.submitBtn} style={{ margin: 0, display: 'inline-flex' }}>
               Ir para o Login
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label" htmlFor="new-password">
-                Nova Senha
+            {error && (
+              <div className={styles.errorAlert}>
+                <AlertCircle size={16} />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {!token && (
+              <div className={styles.errorAlert}>
+                <AlertCircle size={16} />
+                <span>Nenhum token fornecido na URL.</span>
+              </div>
+            )}
+
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="password">
+                Nova Senha (Mínimo 6 caracteres)
               </label>
               <input
-                id="new-password"
+                id="password"
                 type="password"
-                className="form-input"
+                className={styles.formInput}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -112,14 +107,14 @@ function ResetPasswordForm() {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="confirm-password">
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="confirm-password">
                 Confirmar Nova Senha
               </label>
               <input
                 id="confirm-password"
                 type="password"
-                className="form-input"
+                className={styles.formInput}
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -127,10 +122,18 @@ function ResetPasswordForm() {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1.5rem' }} disabled={loading}>
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={loading || !token}
+            >
               <KeyRound size={18} />
               <span>{loading ? 'Salvando...' : 'Salvar Nova Senha'}</span>
             </button>
+
+            <div className={styles.footerLinks}>
+              <Link href="/login">Voltar para o Login</Link>
+            </div>
           </form>
         )}
       </div>
@@ -140,7 +143,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="text-center" style={{ padding: '3rem' }}>Carregando formulário...</div>}>
+    <Suspense fallback={<div className="glass-card text-center" style={{ padding: '3rem' }}>Carregando formulário...</div>}>
       <ResetPasswordForm />
     </Suspense>
   );

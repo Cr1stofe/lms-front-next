@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { registerSchema } from '@/lib/schemas/auth';
 import { UserPlus, AlertCircle } from 'lucide-react';
+import styles from '@/styles/auth-forms.module.scss';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -50,87 +51,74 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container-narrow animate-fade-in" style={{ paddingTop: '1.5rem' }}>
-      <div className="glass-card">
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Criar Conta</h1>
-          <p style={{ fontSize: '0.9rem' }}>Cadastre-se para acessar gratuitamente os cursos</p>
+    <div className={`animate-fade-in ${styles.container}`}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Criar Conta</h1>
+          <p className={styles.subtitle}>Cadastre-se para acessar gratuitamente os cursos</p>
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: '0.75rem 1rem',
-              background: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
-              borderRadius: 'var(--radius-md)',
-              color: '#fca5a5',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: '1.5rem',
-            }}
-          >
+          <div className={styles.errorAlert}>
             <AlertCircle size={16} />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="name">
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="name">
               Nome Completo
             </label>
             <input
               id="name"
               type="text"
-              className="form-input"
-              placeholder="Ex: Carlos Silva"
+              className={styles.formInput}
+              placeholder="Ex: Maria da Silva"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="username">
-              Nome de Usuário (Username)
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="username">
+              Nome de Usuário
             </label>
             <input
               id="username"
               type="text"
-              className="form-input"
-              placeholder="carlos_silva"
+              className={styles.formInput}
+              placeholder="ex: mariasilva"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="email">
               E-mail
             </label>
             <input
               id="email"
               type="email"
-              className="form-input"
-              placeholder="carlos@exemplo.com"
+              className={styles.formInput}
+              placeholder="seu.email@exemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="password">
-              Senha
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="password">
+              Senha (Mínimo 6 caracteres)
             </label>
             <input
               id="password"
               type="password"
-              className="form-input"
+              className={styles.formInput}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -138,17 +126,18 @@ export default function RegisterPage() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1.5rem' }} disabled={loading}>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={loading}
+          >
             <UserPlus size={18} />
-            <span>{loading ? 'Criando conta...' : 'Finalizar Cadastro'}</span>
+            <span>{loading ? 'Cadastrando...' : 'Criar Conta Gratuita'}</span>
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Já possui cadastro?{' '}
-          <Link href="/login" style={{ color: '#818cf8', fontWeight: 600 }}>
-            Fazer login
-          </Link>
+        <div className={styles.footerLinks}>
+          Já tem uma conta? <Link href="/login">Fazer Login</Link>
         </div>
       </div>
     </div>

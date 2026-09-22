@@ -1,0 +1,203 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: $text-muted;
+  flex-wrap: wrap;
+
+  a {
+    color: $text-secondary;
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  .current {
+    color: #ffffff;
+  }
+}
+
+.heroCard {
+  @include glass-card;
+}
+
+.badgesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.badgeIndigo {
+  @include badge-base;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: $accent-indigo-light;
+}
+
+.badgeDefault {
+  @include badge-base;
+}
+
+.badgeEmerald {
+  @include badge-base;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: $accent-emerald-light;
+}
+
+.title {
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 720px;
+  margin-bottom: 1.75rem;
+}
+
+.progressContainer {
+  margin-bottom: 1.75rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+}
+
+.progressMeta {
+  @include flex-between;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resetBtn {
+  background: none;
+  border: none;
+  color: $accent-rose-light;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.startBtn {
+  @include button-primary;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+}
+
+.curriculumHeader {
+  @include flex-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.curriculumCount {
+  font-size: 0.85rem;
+  color: $text-muted;
+}
+
+.lessonsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.lessonItem {
+  @include glass-interactive;
+  padding: 1rem 1.25rem;
+  @include flex-between;
+  gap: 0.75rem;
+  border-radius: $radius-md;
+}
+
+.lessonLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.lessonNumber {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: $text-muted;
+  @include flex-center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+
+  &.done {
+    background: rgba(16, 185, 129, 0.15);
+    color: $accent-emerald-light;
+  }
+}
+
+.lessonText {
+  min-width: 0;
+}
+
+.lessonTitle {
+  font-size: 1rem;
+  margin-bottom: 0.15rem;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.done {
+    color: $text-secondary;
+  }
+}
+
+.lessonDesc {
+  font-size: 0.8rem;
+  color: $text-muted;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lessonRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.lessonDuration {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: $text-secondary;
+}
+
+.chevronWrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  @include flex-center;
+  color: $text-secondary;
+}

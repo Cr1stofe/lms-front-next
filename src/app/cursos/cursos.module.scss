@@ -1,0 +1,117 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.headerCard {
+  @include glass-card;
+}
+
+.headerContent {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.titleArea {
+  flex: 1;
+  min-width: 260px;
+}
+
+.badge {
+  @include badge-base;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: $accent-indigo-light;
+  margin-bottom: 0.5rem;
+}
+
+.statsContainer {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+
+  @include tablet {
+    width: 100%;
+  }
+}
+
+.statBox {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+}
+
+.statNumberIndigo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $accent-indigo-light;
+  font-family: $font-serif;
+}
+
+.statNumberCyan {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #38bdf8;
+  font-family: $font-serif;
+}
+
+.statNumberEmerald {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $accent-emerald-light;
+  font-family: $font-serif;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.searchWrapper {
+  margin-top: 1.5rem;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $text-muted;
+  @include flex-center;
+}
+
+.searchInput {
+  @include input-base;
+  padding-left: 3rem;
+  background: rgba(9, 9, 11, 0.6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.emptyState {
+  @include glass-card;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+}
+
+.emptyIcon {
+  color: $text-muted;
+  margin: 0 auto 1rem;
+  display: block;
+}

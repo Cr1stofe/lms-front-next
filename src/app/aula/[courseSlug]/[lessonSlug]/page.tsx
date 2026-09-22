@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Loader2,
 } from 'lucide-react';
+import styles from './lesson.module.scss';
 
 interface LessonPageProps {
   params: Promise<{ courseSlug: string; lessonSlug: string }>;
@@ -78,27 +79,27 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
   const videoUrl = resolveVideoUrl(lesson.video);
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+    <div className={`animate-fade-in ${styles.container}`}>
       {/* Breadcrumb Navigation */}
-      <nav className="breadcrumb">
+      <nav className={styles.breadcrumb}>
         <Link href="/cursos">Cursos</Link>
         <ChevronRight size={14} />
         <Link href={`/cursos/${courseSlug}`}>{courseSlug}</Link>
         <ChevronRight size={14} />
-        <span style={{ color: '#ffffff' }}>{lesson.title}</span>
+        <span className={styles.current}>{lesson.title}</span>
       </nav>
 
       {/* Lesson Header */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+      <div className={styles.headerRow}>
         <div>
-          <span className="badge badge-indigo" style={{ marginBottom: '0.35rem' }}>
+          <span className={styles.badgeIndigo}>
             Aula {lesson.order} • {secToMin(lesson.seconds)}
           </span>
-          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.2rem)', textAlign: 'left' }}>{lesson.title}</h1>
+          <h1 className={styles.title}>{lesson.title}</h1>
         </div>
 
         {completed && (
-          <span className="badge badge-emerald" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+          <span className={styles.badgeEmerald}>
             <CheckCircle2 size={15} /> Aula Concluída
           </span>
         )}
@@ -108,20 +109,10 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
       <VideoPlayer src={videoUrl} title={lesson.title} />
 
       {/* Navigation & Completion Bar */}
-      <div
-        className="glass-card"
-        style={{
-          padding: '1.25rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '0.75rem',
-          flexWrap: 'wrap',
-        }}
-      >
+      <div className={styles.controlsCard}>
         <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'flex-start' }}>
           {lesson.prev ? (
-            <Link href={`/aula/${courseSlug}/${lesson.prev}`} className="btn btn-sm" style={{ width: '100%', maxWidth: 160 }}>
+            <Link href={`/aula/${courseSlug}/${lesson.prev}`} className={styles.navBtn}>
               <ChevronLeft size={16} />
               <span>Anterior</span>
             </Link>
@@ -135,8 +126,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
             <button
               onClick={handleComplete}
               disabled={completing || completed}
-              className={`btn ${completed ? 'btn-emerald' : 'btn-primary'}`}
-              style={{ width: '100%', maxWidth: 240 }}
+              className={completed ? styles.completeBtnDone : styles.completeBtn}
             >
               <CheckCircle2 size={18} />
               <span>{completed ? 'Concluída ✓' : completing ? 'Salvando...' : 'Completar Aula'}</span>
@@ -146,12 +136,12 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
         <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'flex-end' }}>
           {lesson.next ? (
-            <Link href={`/aula/${courseSlug}/${lesson.next}`} className="btn btn-sm btn-primary" style={{ width: '100%', maxWidth: 160 }}>
+            <Link href={`/aula/${courseSlug}/${lesson.next}`} className={styles.navBtnPrimary}>
               <span>Próxima</span>
               <ChevronRight size={16} />
             </Link>
           ) : (
-            <Link href={`/cursos/${courseSlug}`} className="btn btn-sm" style={{ width: '100%', maxWidth: 160 }}>
+            <Link href={`/cursos/${courseSlug}`} className={styles.navBtnPrimary}>
               <span>Ver Grade</span>
               <ChevronRight size={16} />
             </Link>
@@ -161,9 +151,9 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
       {/* Lesson Description */}
       {lesson.description && (
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Sobre esta aula</h3>
-          <p style={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
+        <div className={styles.aboutCard}>
+          <h3 className={styles.aboutTitle}>Sobre esta aula</h3>
+          <p className={styles.aboutDescription}>
             {lesson.description}
           </p>
         </div>
