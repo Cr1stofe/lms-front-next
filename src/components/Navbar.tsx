@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { BookOpen, Award, Users, PlusCircle, LogOut, Video, LogIn, UserPlus, Menu, X, Shield, User } from 'lucide-react';
+import { BookOpen, Award, Users, PlusCircle, LogOut, Video, LogIn, UserPlus, Menu, X, Shield, User as UserIcon } from 'lucide-react';
 
 export default function Navbar() {
   const { role, user, logout } = useAuth();
   const pathname = usePathname();
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Close mobile menu whenever pathname changes
@@ -20,8 +19,10 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     setMobileMenuOpen(false);
-    router.push('/login');
+    window.location.href = '/login';
   };
+
+  const currentRole = (role || 'public').toLowerCase();
 
   return (
     <header className="navbar">
@@ -47,7 +48,7 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <div className="navbar-menu desktop-nav">
-          {role === 'public' && (
+          {currentRole === 'public' && (
             <>
               <Link href="/cursos" className={`navbar-link ${pathname === '/cursos' ? 'active' : ''}`}>
                 Cursos
@@ -65,7 +66,7 @@ export default function Navbar() {
             </>
           )}
 
-          {role === 'USER' && (
+          {currentRole === 'user' && (
             <>
               <Link href="/cursos" className={`navbar-link ${pathname.startsWith('/cursos') || pathname.startsWith('/aula') ? 'active' : ''}`}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -87,7 +88,7 @@ export default function Navbar() {
             </>
           )}
 
-          {(role === 'ADMIN' || role === 'EDITOR') && (
+          {(currentRole === 'admin' || currentRole === 'editor') && (
             <>
               <Link href="/admin/cursos" className={`navbar-link ${pathname === '/admin/cursos' ? 'active' : ''}`}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -169,7 +170,7 @@ export default function Navbar() {
                   justifyContent: 'center',
                 }}
               >
-                {role === 'ADMIN' ? <Shield size={18} /> : <User size={18} />}
+                {currentRole === 'admin' ? <Shield size={18} /> : <UserIcon size={18} />}
               </div>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.95rem', color: '#ffffff' }}>{user.name}</div>
@@ -179,7 +180,7 @@ export default function Navbar() {
           )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {role === 'public' && (
+            {currentRole === 'public' && (
               <>
                 <Link
                   href="/cursos"
@@ -205,7 +206,7 @@ export default function Navbar() {
               </>
             )}
 
-            {role === 'USER' && (
+            {currentRole === 'user' && (
               <>
                 <Link
                   href="/cursos"
@@ -231,7 +232,7 @@ export default function Navbar() {
               </>
             )}
 
-            {(role === 'ADMIN' || role === 'EDITOR') && (
+            {(currentRole === 'admin' || currentRole === 'editor') && (
               <>
                 <Link
                   href="/admin/cursos"

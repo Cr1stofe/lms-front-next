@@ -25,19 +25,21 @@ function LoginForm() {
     try {
       const res = await login(email, password);
       if (res.success) {
+        let destination = '/cursos';
         if (redirectUrl) {
-          router.push(redirectUrl);
+          destination = redirectUrl;
         } else if (res.role === 'admin' || res.role === 'editor') {
-          router.push('/admin/cursos');
-        } else {
-          router.push('/cursos');
+          destination = '/admin/cursos';
         }
+        
+        // Redireciona e atualiza a aplicação
+        window.location.href = destination;
       } else {
         setError(res.error || 'Credenciais inválidas');
+        setLoading(false);
       }
     } catch {
       setError('Falha ao autenticar');
-    } finally {
       setLoading(false);
     }
   };
