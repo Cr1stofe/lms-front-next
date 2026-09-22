@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Outfit, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
+import { Outfit, Plus_Jakarta_Sans, Space_Grotesk } from 'next/font/google';
 import '@/styles/globals.scss';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -19,10 +19,10 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-playfair',
-  weight: ['400', '600', '700'],
+  variable: '--font-heading',
+  weight: ['500', '600', '700'],
   display: 'swap',
 });
 
@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable} ${playfair.variable}`}>
+    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable} ${spaceGrotesk.variable}`}>
       <body>
         <SessionInitializer />
         <div className="app-container">
