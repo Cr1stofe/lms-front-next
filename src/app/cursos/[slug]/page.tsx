@@ -2,8 +2,8 @@
 
 import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useLMS } from '@/context/LMSContext';
-import { useAuth } from '@/context/AuthContext';
+import { useLMSStore } from '@/stores/useLMSStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { secToMin } from '@/lib/utils';
 import ProgressBar from '@/components/ProgressBar';
 import { Course, Lesson, CompletedLesson } from '@/lib/types';
@@ -24,8 +24,9 @@ interface CourseDetailsProps {
 
 export default function CourseDetailPage({ params }: CourseDetailsProps) {
   const { slug } = use(params);
-  const { getCourseBySlug, resetCourseProgress } = useLMS();
-  const { role } = useAuth();
+  const getCourseBySlug = useLMSStore((state) => state.getCourseBySlug);
+  const resetCourseProgress = useLMSStore((state) => state.resetCourseProgress);
+  const role = useAuthStore((state) => state.role);
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);

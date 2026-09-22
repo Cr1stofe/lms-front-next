@@ -2,8 +2,8 @@
 
 import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useLMS } from '@/context/LMSContext';
-import { useAuth } from '@/context/AuthContext';
+import { useLMSStore } from '@/stores/useLMSStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import VideoPlayer from '@/components/VideoPlayer';
 import { secToMin } from '@/lib/utils';
 import { resolveVideoUrl } from '@/lib/api-client';
@@ -22,8 +22,9 @@ interface LessonPageProps {
 
 export default function LessonPlayerPage({ params }: LessonPageProps) {
   const { courseSlug, lessonSlug } = use(params);
-  const { getLessonBySlugs, completeLesson } = useLMS();
-  const { role } = useAuth();
+  const getLessonBySlugs = useLMSStore((state) => state.getLessonBySlugs);
+  const completeLesson = useLMSStore((state) => state.completeLesson);
+  const role = useAuthStore((state) => state.role);
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);

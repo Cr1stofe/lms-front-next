@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { BookOpen, Award, Users, PlusCircle, LogOut, Video, LogIn, UserPlus, Menu, X, Shield, User as UserIcon } from 'lucide-react';
 
 export default function Navbar() {
-  const { role, user, logout } = useAuth();
+  const role = useAuthStore((state) => state.role);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

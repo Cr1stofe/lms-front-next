@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useLMS } from '@/context/LMSContext';
+import { useLMSStore } from '@/stores/useLMSStore';
 import { API_BASE } from '@/lib/api-client';
 import { Certificate } from '@/lib/types';
 import { Award, ExternalLink, Loader2, BookOpen } from 'lucide-react';
 
 export default function CertificatesPage() {
-  const { getCertificates } = useLMS();
+  const getCertificates = useLMSStore((state) => state.getCertificates);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
 

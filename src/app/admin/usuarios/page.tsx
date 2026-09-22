@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLMS } from '@/context/LMSContext';
+import { useLMSStore } from '@/stores/useLMSStore';
 import { User } from '@/lib/types';
 import { Search, Users, Shield, User as UserIcon, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 export default function AdminUsersPage() {
-  const { searchUsers } = useLMS();
+  const searchUsers = useLMSStore((state) => state.searchUsers);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);

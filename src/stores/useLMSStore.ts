@@ -1,10 +1,8 @@
-'use client';
-
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { create } from 'zustand';
 import { Course, Lesson, Certificate, User, CourseDetailsResponse } from '@/lib/types';
 import { apiRequest, API_BASE } from '@/lib/api-client';
 
-interface LMSContextType {
+interface LMSState {
   courses: Course[];
   loadingCourses: boolean;
   fetchCourses: () => Promise<Course[]>;
@@ -26,37 +24,28 @@ interface LMSContextType {
     video: string;
   }) => Promise<any>;
   uploadLessonVideo: (file: File, isFree: boolean) => Promise<string>;
-  searchUsers: (query: string, page: number) => Promise<{ users: User[]; total: number; totalPages: number }>;
+  searchUsers: (query: string, page?: number) => Promise<{ users: User[]; total: number; totalPages: number }>;
 }
 
-const LMSContext = createContext<LMSContextType | undefined>(undefined);
+export const useLMSStore = create<LMSState>((set, get) => ({
+  courses: [],
+  loadingCourses: false,
 
-export function LMSProvider({ children }: { children: React.ReactNode }) {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
-
-  const fetchCourses = useCallback(async (): Promise<Course[]> => {
-    setLoadingCourses(true);
+  fetchCourses: async (): Promise<Course[]> => {
+    set({ loadingCourses: true });
     try {
       const { data } = await apiRequest<Course[]>('/lms/courses');
-      if (Array.isArray(data)) {
-        setCourses(data);
-        return data;
-      }
-      return [];
+      const coursesList = Array.isArray(data) ? data : [];
+      set({ courses: coursesList, loadingCourses: false });
+      return coursesList;
     } catch (e) {
       console.error('Erro ao carregar cursos da API', e);
+      set({ loadingCourses: false });
       return [];
-    } finally {
-      setLoadingCourses(false);
     }
-  }, []);
+  },
 
-  useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
-
-  const getCourseBySlug = async (slug: string): Promise<CourseDetailsResponse | null> => {
+  getCourseBySlug: async (slug: string): Promise<CourseDetailsResponse | null> => {
     try {
       const { data } = await apiRequest<CourseDetailsResponse>(`/lms/course/${slug}`);
       return data;
@@ -64,9 +53,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao buscar detalhes do curso', e);
       return null;
     }
-  };
+  },
 
-  const getLessonBySlugs = async (courseSlug: string, lessonSlug: string): Promise<Lesson | null> => {
+  getLessonBySlugs: async (courseSlug: string, lessonSlug: string): Promise<Lesson | null> => {
     try {
       const { data } = await apiRequest<Lesson>(`/lms/lesson/${courseSlug}/${lessonSlug}`);
       return data;
@@ -74,9 +63,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao buscar aula', e);
       return null;
     }
-  };
+  },
 
-  const completeLesson = async (courseId: string | number, lessonId: string | number): Promise<boolean> => {
+  completeLesson: async (courseId: string | number, lessonId: string | number): Promise<boolean> => {
     try {
       await apiRequest('/lms/lesson/complete', {
         method: 'POST',
@@ -87,9 +76,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao completar aula', e);
       return false;
     }
-  };
+  },
 
-  const resetCourseProgress = async (courseId: string | number): Promise<boolean> => {
+  resetCourseProgress: async (courseId: string | number): Promise<boolean> => {
     try {
       await apiRequest('/lms/course/reset', {
         method: 'DELETE',
@@ -100,9 +89,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao resetar curso', e);
       return false;
     }
-  };
+  },
 
-  const getCertificates = async (): Promise<Certificate[]> => {
+  getCertificates: async (): Promise<Certificate[]> => {
     try {
       const { data } = await apiRequest<Certificate[]>('/lms/certificates');
       return Array.isArray(data) ? data : [];
@@ -110,9 +99,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao buscar certificados', e);
       return [];
     }
-  };
+  },
 
-  const upsertCourse = async (courseData: {
+  upsertCourse: async (courseData: {
     slug: string;
     title: string;
     description: string;
@@ -123,11 +112,11 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       method: 'POST',
       body: JSON.stringify(courseData),
     });
-    await fetchCourses();
+    await get().fetchCourses();
     return data;
-  };
+  },
 
-  const getAdminLessons = async (): Promise<Lesson[]> => {
+  getAdminLessons: async (): Promise<Lesson[]> => {
     try {
       const { data } = await apiRequest<Lesson[]>('/lms/lessons');
       return Array.isArray(data) ? data : [];
@@ -135,9 +124,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao buscar aulas no painel admin', e);
       return [];
     }
-  };
+  },
 
-  const upsertLesson = async (lessonData: {
+  upsertLesson: async (lessonData: {
     courseSlug: string;
     slug: string;
     title: string;
@@ -156,9 +145,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify(payload),
     });
     return data;
-  };
+  },
 
-  const uploadLessonVideo = async (file: File, isFree: boolean): Promise<string> => {
+  uploadLessonVideo: async (file: File, isFree: boolean): Promise<string> => {
     const url = `${API_BASE}/files/upload`;
     const response = await fetch(url, {
       method: 'POST',
@@ -177,9 +166,9 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
 
     const upload = await response.json();
     return upload.path;
-  };
+  },
 
-  const searchUsers = async (query: string, page = 1): Promise<{ users: User[]; total: number; totalPages: number }> => {
+  searchUsers: async (query: string, page = 1): Promise<{ users: User[]; total: number; totalPages: number }> => {
     try {
       const { data, response } = await apiRequest<User[]>(`/auth/users/search?s=${encodeURIComponent(query)}&page=${page}`);
       const totalHeader = response.headers.get('x-total-count');
@@ -194,35 +183,7 @@ export function LMSProvider({ children }: { children: React.ReactNode }) {
       console.error('Erro ao buscar usuários', e);
       return { users: [], total: 0, totalPages: 1 };
     }
-  };
+  },
+}));
 
-  return (
-    <LMSContext.Provider
-      value={{
-        courses,
-        loadingCourses,
-        fetchCourses,
-        getCourseBySlug,
-        getLessonBySlugs,
-        completeLesson,
-        resetCourseProgress,
-        getCertificates,
-        upsertCourse,
-        getAdminLessons,
-        upsertLesson,
-        uploadLessonVideo,
-        searchUsers,
-      }}
-    >
-      {children}
-    </LMSContext.Provider>
-  );
-}
-
-export function useLMS() {
-  const context = useContext(LMSContext);
-  if (!context) {
-    throw new Error('useLMS deve ser usado dentro de um LMSProvider');
-  }
-  return context;
-}
+export const useLMS = useLMSStore;

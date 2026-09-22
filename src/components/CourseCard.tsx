@@ -4,14 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { Course } from '@/lib/types';
 import { Clock, BookOpen, ArrowRight } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface CourseCardProps {
   course: Course;
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
-  const { role } = useAuth();
+  const role = useAuthStore((state) => state.role);
 
   return (
     <div className="glass-card glass-card-interactive" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

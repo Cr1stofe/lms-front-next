@@ -1,13 +1,10 @@
-'use client';
-
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { create } from 'zustand';
 import { User, Role } from '@/lib/types';
 import { apiRequest } from '@/lib/api-client';
 
-interface AuthContextType {
+interface AuthState {
   user: User | null;
   role: Role;
-  isAuthenticated: boolean;
   loading: boolean;
   refreshSession: () => Promise<Role>;
   login: (email: string, password: string) => Promise<{ success: boolean; role?: Role; error?: string }>;
@@ -17,60 +14,57 @@ interface AuthContextType {
   resetPassword: (token: string, password: string) => Promise<{ success: boolean; error?: string }>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
+  role: 'public',
+  loading: true,
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [role, setRole] = useState<Role>('public');
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const refreshSession = useCallback(async (): Promise<Role> => {
+  refreshSession: async (): Promise<Role> => {
     try {
       const { data } = await apiRequest<{ role: Role; title?: string; email?: string; name?: string; username?: string }>('/auth/session');
       const userRole = (data?.role || 'public').toLowerCase() as Role;
-      setRole(userRole);
-      if (userRole !== 'public') {
-        setUser({
-          name: data?.name || (userRole === 'admin' ? 'Administrador' : 'Aluno'),
-          username: data?.username || (userRole === 'admin' ? 'admin' : 'aluno'),
-          email: data?.email || (userRole === 'admin' ? 'admin@lms.com' : 'aluno@lms.com'),
-          role: userRole,
-        });
-      } else {
-        setUser(null);
-      }
+      
+      const userObj = userRole !== 'public' ? {
+        name: data?.name || (userRole === 'admin' ? 'Administrador' : 'Aluno'),
+        username: data?.username || (userRole === 'admin' ? 'admin' : 'aluno'),
+        email: data?.email || (userRole === 'admin' ? 'admin@lms.com' : 'aluno@lms.com'),
+        role: userRole,
+      } : null;
+
+      set({ role: userRole, user: userObj, loading: false });
       return userRole;
     } catch {
-      setRole('public');
-      setUser(null);
+      set({ role: 'public', user: null, loading: false });
       return 'public';
-    } finally {
-      setLoading(false);
     }
-  }, []);
+  },
 
-  useEffect(() => {
-    refreshSession();
-  }, [refreshSession]);
-
-  const login = async (email: string, password: string) => {
+  login: async (email: string, password: string) => {
     try {
-      const { data } = await apiRequest('/auth/login', {
+      const { data } = await apiRequest<{ role?: Role; user?: User }>('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      const activeRole = (data?.role || await refreshSession()) as Role;
-      setRole(activeRole);
-      if (data?.user) {
-        setUser(data.user);
-      }
+      
+      const activeRole = (data?.role || await get().refreshSession()) as Role;
+      set({
+        role: activeRole,
+        user: data?.user || (activeRole !== 'public' ? {
+          name: activeRole === 'admin' ? 'Administrador' : 'Aluno',
+          username: activeRole === 'admin' ? 'admin' : 'aluno',
+          email,
+          role: activeRole,
+        } : null),
+        loading: false,
+      });
+
       return { success: true, role: activeRole };
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao realizar login' };
     }
-  };
+  },
 
-  const register = async (name: string, username: string, email: string, password: string) => {
+  register: async (name: string, username: string, email: string, password: string) => {
     try {
       await apiRequest('/auth/user', {
         method: 'POST',
@@ -80,9 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao criar conta' };
     }
-  };
+  },
 
-  const logout = async () => {
+  logout: async () => {
     try {
       await apiRequest('/auth/logout', {
         method: 'DELETE',
@@ -90,12 +84,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error('Erro ao efetuar logout', e);
     } finally {
-      setRole('public');
-      setUser(null);
+      set({ role: 'public', user: null, loading: false });
     }
-  };
+  },
 
-  const requestPasswordReset = async (email: string) => {
+  requestPasswordReset: async (email: string) => {
     try {
       await apiRequest('/auth/password/forgot', {
         method: 'POST',
@@ -105,9 +98,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao solicitar recuperação' };
     }
-  };
+  },
 
-  const resetPassword = async (token: string, password: string) => {
+  resetPassword: async (token: string, password: string) => {
     try {
       await apiRequest('/auth/password/reset', {
         method: 'POST',
@@ -117,34 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       return { success: false, error: error.message || 'Erro ao redefinir senha' };
     }
-  };
+  },
+}));
 
-  const isAuthenticated = role !== 'public';
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        role,
-        isAuthenticated,
-        loading,
-        refreshSession,
-        login,
-        register,
-        logout,
-        requestPasswordReset,
-        resetPassword,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-  }
-  return context;
-}
+export const useAuth = useAuthStore;

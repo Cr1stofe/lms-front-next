@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useLMS } from '@/context/LMSContext';
+import { useLMSStore } from '@/stores/useLMSStore';
 import { slugify } from '@/lib/utils';
 import { Lesson } from '@/lib/types';
 import { Video, Save, CheckCircle2, AlertCircle, PlusCircle, UploadCloud } from 'lucide-react';
 
 export default function AdminLessonsPage() {
-  const { getAdminLessons, upsertLesson, uploadLessonVideo } = useLMS();
+  const getAdminLessons = useLMSStore((state) => state.getAdminLessons);
+  const upsertLesson = useLMSStore((state) => state.upsertLesson);
+  const uploadLessonVideo = useLMSStore((state) => state.uploadLessonVideo);
 
   const [adminLessons, setAdminLessons] = useState<Lesson[]>([]);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState<string>('new');
