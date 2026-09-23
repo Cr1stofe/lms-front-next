@@ -51,7 +51,6 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        {/* Search form */}
         <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
           <div className={styles.searchIcon}>
             <Search size={18} />
@@ -65,7 +64,6 @@ export default function AdminUsersPage() {
           />
         </form>
 
-        {/* Users List */}
         {loading ? (
           <div className={styles.loadingState}>
             <Loader2 size={32} className={`animate-spin ${styles.spinner}`} />
@@ -111,7 +109,6 @@ export default function AdminUsersPage() {
           </div>
         )}
 
-        {/* Pagination controls */}
         {totalPages > 1 && (
           <div className={styles.pagination}>
             <button

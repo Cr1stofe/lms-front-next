@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import styles from './VideoPlayer.module.scss';
 
@@ -12,6 +12,10 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ src, title }: VideoPlayerProps) {
   const [hasError, setHasError] = useState(false);
 
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
+
   const isValidSrc = typeof src === 'string' && src.trim() !== '';
 
   return (
@@ -19,6 +23,7 @@ export default function VideoPlayer({ src, title }: VideoPlayerProps) {
       {isValidSrc && !hasError ? (
         <video
           key={src}
+          src={src}
           className={styles.videoElement}
           controls
           preload="metadata"
@@ -36,7 +41,7 @@ export default function VideoPlayer({ src, title }: VideoPlayerProps) {
           <h4 className={styles.title}>{title}</h4>
           <p className={styles.message}>
             {isValidSrc
-              ? 'Não foi possível carregar o vídeo. Verifique se o arquivo está disponível.'
+              ? 'Não foi possível carregar o vídeo. Verifique se o arquivo está disponível e se você possui acesso.'
               : 'Nenhum arquivo de vídeo associado a esta aula.'}
           </p>
         </div>

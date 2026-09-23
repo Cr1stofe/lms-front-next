@@ -27,7 +27,8 @@ interface LessonPageProps {
 export default function LessonPlayerPage({ params }: LessonPageProps) {
   const { courseSlug, lessonSlug } = use(params);
   const role = useAuthStore((state) => state.role);
-  const isAuthenticated = role === 'user' || role === 'admin' || role === 'editor';
+  const isAuthenticated =
+    role === 'user' || role === 'admin' || role === 'editor';
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,8 +51,15 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
   if (loading) {
     return (
-      <div className="glass-card text-center animate-fade-in" style={{ padding: '4rem 1.5rem' }}>
-        <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#818cf8' }} />
+      <div
+        className="glass-card text-center animate-fade-in"
+        style={{ padding: '4rem 1.5rem' }}
+      >
+        <Loader2
+          size={32}
+          className="animate-spin"
+          style={{ margin: '0 auto 1rem', color: '#818cf8' }}
+        />
         <p>Carregando aula...</p>
       </div>
     );
@@ -59,9 +67,14 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
   if (!lesson) {
     return (
-      <div className="glass-card text-center animate-fade-in" style={{ padding: '3.5rem 1.5rem' }}>
+      <div
+        className="glass-card text-center animate-fade-in"
+        style={{ padding: '3.5rem 1.5rem' }}
+      >
         <h2 style={{ marginBottom: '1rem' }}>Aula não encontrada</h2>
-        <p style={{ marginBottom: '2rem' }}>A aula requisitada não foi localizada.</p>
+        <p style={{ marginBottom: '2rem' }}>
+          A aula requisitada não foi localizada.
+        </p>
         <Link href={`/cursos/${courseSlug}`} className="btn btn-primary">
           <ArrowLeft size={16} /> Voltar para o Curso
         </Link>
@@ -120,8 +133,9 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
           <h2 className={styles.lockTitle}>Conteúdo Exclusivo para Alunos</h2>
           <p className={styles.lockDescription}>
-            A aula <strong>&ldquo;{lesson.title}&rdquo;</strong> é restrita para alunos da plataforma.
-            Faça login com sua conta ou crie um cadastro gratuito para liberar o acesso imediato e registrar seu progresso.
+            A aula <strong>&ldquo;{lesson.title}&rdquo;</strong> é restrita para
+            alunos da plataforma. Faça login com sua conta ou crie um cadastro
+            gratuito para liberar o acesso imediato e registrar seu progresso.
           </p>
 
           <div className={styles.lockActions}>
@@ -178,7 +192,9 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           {!isAuthenticated && isFree && (
-            <span className={styles.badgeFree}>Aula Demonstrativa (Grátis)</span>
+            <span className={styles.badgeFree}>
+              Aula Demonstrativa (Grátis)
+            </span>
           )}
           {completed && (
             <span className={styles.badgeEmerald}>
@@ -193,9 +209,18 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
       {/* Navigation & Completion Bar */}
       <div className={styles.controlsCard}>
-        <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'flex-start' }}>
+        <div
+          style={{
+            flex: '1 1 auto',
+            display: 'flex',
+            justifyContent: 'flex-start',
+          }}
+        >
           {lesson.prev ? (
-            <Link href={`/aula/${courseSlug}/${lesson.prev}`} className={styles.navBtn}>
+            <Link
+              href={`/aula/${courseSlug}/${lesson.prev}`}
+              className={styles.navBtn}
+            >
               <ChevronLeft size={16} />
               <span>Anterior</span>
             </Link>
@@ -204,27 +229,53 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           )}
         </div>
 
-        <div style={{ flex: '2 1 auto', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            flex: '2 1 auto',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           {role === 'user' && (
             <button
               onClick={handleComplete}
               disabled={completing || completed}
-              className={completed ? styles.completeBtnDone : styles.completeBtn}
+              className={
+                completed ? styles.completeBtnDone : styles.completeBtn
+              }
             >
               <CheckCircle2 size={18} />
-              <span>{completed ? 'Concluída ✓' : completing ? 'Salvando...' : 'Completar Aula'}</span>
+              <span>
+                {completed
+                  ? 'Concluída ✓'
+                  : completing
+                    ? 'Salvando...'
+                    : 'Completar Aula'}
+              </span>
             </button>
           )}
         </div>
 
-        <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            flex: '1 1 auto',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
           {lesson.next ? (
-            <Link href={`/aula/${courseSlug}/${lesson.next}`} className={styles.navBtnPrimary}>
+            <Link
+              href={`/aula/${courseSlug}/${lesson.next}`}
+              className={styles.navBtnPrimary}
+            >
               <span>Próxima</span>
               <ChevronRight size={16} />
             </Link>
           ) : (
-            <Link href={`/cursos/${courseSlug}`} className={styles.navBtnPrimary}>
+            <Link
+              href={`/cursos/${courseSlug}`}
+              className={styles.navBtnPrimary}
+            >
               <span>Ver Grade</span>
               <ChevronRight size={16} />
             </Link>
@@ -242,4 +293,3 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
     </div>
   );
 }
-
