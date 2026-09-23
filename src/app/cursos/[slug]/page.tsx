@@ -17,6 +17,9 @@ import {
   ArrowLeft,
   Loader2,
   Award,
+  Lock,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 import styles from './course-detail.module.scss';
 import { API_BASE } from '@/lib/api-client';
@@ -28,6 +31,7 @@ interface CourseDetailsProps {
 export default function CourseDetailPage({ params }: CourseDetailsProps) {
   const { slug } = use(params);
   const role = useAuthStore((state) => state.role);
+  const isAuthenticated = role === 'user' || role === 'admin' || role === 'editor';
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -95,6 +99,10 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
     lessons.find(
       (l) => !completed.some((c) => c.lesson_id == l.id || c.lessonId == l.id),
     ) || lessons[0];
+
+  const firstFreeLesson = lessons.find(
+    (l) => Boolean(l.free) && l.free !== 0,
+  );
 
   const handleReset = async () => {
     if (confirm('Tem certeza que deseja reiniciar o progresso deste curso?')) {
@@ -185,7 +193,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 </Link>
               )}
             </>
-          ) : (
+          ) : isAuthenticated ? (
             firstUncompletedLesson && (
               <Link
                 href={`/aula/${course.slug}/${firstUncompletedLesson.slug}`}
@@ -197,6 +205,37 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 </span>
               </Link>
             )
+          ) : firstFreeLesson ? (
+            <>
+              <Link
+                href={`/aula/${course.slug}/${firstFreeLesson.slug}`}
+                className={styles.startBtn}
+              >
+                <Play size={18} />
+                <span>Assistir Aula Grátis</span>
+              </Link>
+              <Link
+                href={`/login?redirect=/cursos/${course.slug}`}
+                className={styles.secondaryBtn}
+              >
+                <LogIn size={16} />
+                <span>Entrar na Plataforma</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href={`/login?redirect=/cursos/${course.slug}`}
+                className={styles.startBtn}
+              >
+                <LogIn size={18} />
+                <span>Fazer Login para Assistir</span>
+              </Link>
+              <Link href="/criar-conta" className={styles.secondaryBtn}>
+                <UserPlus size={16} />
+                <span>Criar Conta Grátis</span>
+              </Link>
+            </>
           )}
         </div>
       </div>
@@ -213,25 +252,64 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
             const isLessonDone = completed.some(
               (x) => x.lesson_id == lesson.id || x.lessonId == lesson.id,
             );
+            const isFree = Boolean(lesson.free) && lesson.free !== 0;
+            const hasAccess = isAuthenticated || isFree;
 
+            if (hasAccess) {
+              return (
+                <Link
+                  key={lesson.id}
+                  href={`/aula/${course.slug}/${lesson.slug}`}
+                  className={styles.lessonItem}
+                >
+                  <div className={styles.lessonLeft}>
+                    <div
+                      className={`${styles.lessonNumber} ${isLessonDone ? styles.done : ''}`}
+                    >
+                      {isLessonDone ? <CheckCircle2 size={16} /> : idx + 1}
+                    </div>
+
+                    <div className={styles.lessonText}>
+                      <h3
+                        className={`${styles.lessonTitle} ${isLessonDone ? styles.done : ''}`}
+                      >
+                        {lesson.title}
+                        {!isAuthenticated && isFree && (
+                          <span className={styles.freeTag}>Grátis</span>
+                        )}
+                      </h3>
+                      <p className={styles.lessonDesc}>{lesson.description}</p>
+                    </div>
+                  </div>
+
+                  <div className={styles.lessonRight}>
+                    <span className={styles.lessonDuration}>
+                      {secToMin(lesson.seconds)}
+                    </span>
+                    <div className={styles.chevronWrapper}>
+                      <ChevronRight size={14} />
+                    </div>
+                  </div>
+                </Link>
+              );
+            }
+
+            // Non-free lesson for unauthenticated user (Locked)
             return (
-              <Link
+              <div
                 key={lesson.id}
-                href={`/aula/${course.slug}/${lesson.slug}`}
-                className={styles.lessonItem}
+                className={`${styles.lessonItem} ${styles.locked}`}
+                title="Faça login para assistir esta aula"
               >
                 <div className={styles.lessonLeft}>
-                  <div
-                    className={`${styles.lessonNumber} ${isLessonDone ? styles.done : ''}`}
-                  >
-                    {isLessonDone ? <CheckCircle2 size={16} /> : idx + 1}
+                  <div className={`${styles.lessonNumber} ${styles.locked}`}>
+                    <Lock size={14} />
                   </div>
 
                   <div className={styles.lessonText}>
-                    <h3
-                      className={`${styles.lessonTitle} ${isLessonDone ? styles.done : ''}`}
-                    >
+                    <h3 className={`${styles.lessonTitle} ${styles.locked}`}>
                       {lesson.title}
+                      <span className={styles.lockedTag}>Bloqueada</span>
                     </h3>
                     <p className={styles.lessonDesc}>{lesson.description}</p>
                   </div>
@@ -241,11 +319,11 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                   <span className={styles.lessonDuration}>
                     {secToMin(lesson.seconds)}
                   </span>
-                  <div className={styles.chevronWrapper}>
-                    <ChevronRight size={14} />
+                  <div className={`${styles.chevronWrapper} ${styles.locked}`}>
+                    <Lock size={14} />
                   </div>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
@@ -253,3 +331,4 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
     </div>
   );
 }
+

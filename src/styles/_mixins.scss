@@ -43,9 +43,13 @@
 @mixin glass-interactive {
   @include glass-card;
   cursor: pointer;
+  transition: border-color $transition-normal,
+              transform $transition-normal,
+              box-shadow $transition-normal,
+              background-color $transition-normal;
 
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     box-shadow: $shadow-glow, $shadow-md;
     border-color: $border-active;
   }
@@ -84,26 +88,40 @@
   background: $gradient-pill;
   color: $text-primary;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  user-select: none;
+  transition: transform $transition-normal,
+              background-color $transition-normal,
+              background-image $transition-normal,
+              border-color $transition-normal,
+              box-shadow $transition-normal,
+              filter $transition-normal,
+              color $transition-normal,
+              opacity $transition-normal;
   text-align: center;
   white-space: nowrap;
   letter-spacing: -0.01em;
   text-decoration: none;
+  will-change: transform;
 
   &:hover {
     background: $gradient-pill-hover;
     border-color: $border-hover;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: $shadow-sm;
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.97);
+    transition-duration: 0.1s;
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
+    transform: none !important;
+    box-shadow: none !important;
   }
 }
 
@@ -115,8 +133,17 @@
   box-shadow: $shadow-btn;
 
   &:hover {
+    background: $gradient-btn;
+    border-color: transparent;
     box-shadow: $shadow-btn-hover;
     filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: $shadow-btn;
+    transition-duration: 0.1s;
   }
 }
 
@@ -128,8 +155,17 @@
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 
   &:hover {
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
-    filter: brightness(1.05);
+    background: $gradient-emerald;
+    border-color: transparent;
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    transition-duration: 0.1s;
   }
 }
 

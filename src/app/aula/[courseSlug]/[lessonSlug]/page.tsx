@@ -14,6 +14,9 @@ import {
   CheckCircle2,
   ArrowLeft,
   Loader2,
+  Lock,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 import styles from './lesson.module.scss';
 
@@ -24,6 +27,7 @@ interface LessonPageProps {
 export default function LessonPlayerPage({ params }: LessonPageProps) {
   const { courseSlug, lessonSlug } = use(params);
   const role = useAuthStore((state) => state.role);
+  const isAuthenticated = role === 'user' || role === 'admin' || role === 'editor';
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,6 +69,9 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
     );
   }
 
+  const isFree = Boolean(lesson.free) && lesson.free !== 0;
+  const hasAccess = isAuthenticated || isFree;
+
   const handleComplete = async () => {
     const courseId = lesson.course_id || lesson.courseId;
     if (!courseId || completed) return;
@@ -77,6 +84,77 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
   };
 
   const videoUrl = resolveVideoUrl(lesson.video);
+
+  // If user is not authenticated and lesson is NOT free -> Render locked barrier card
+  if (!hasAccess) {
+    return (
+      <div className={`animate-fade-in ${styles.container}`}>
+        {/* Breadcrumb Navigation */}
+        <nav className={styles.breadcrumb}>
+          <Link href="/cursos">Cursos</Link>
+          <ChevronRight size={14} />
+          <Link href={`/cursos/${courseSlug}`}>{courseSlug}</Link>
+          <ChevronRight size={14} />
+          <span className={styles.current}>{lesson.title}</span>
+        </nav>
+
+        {/* Lesson Header */}
+        <div className={styles.headerRow}>
+          <div>
+            <span className={styles.badgeIndigo}>
+              Aula {lesson.order} • {secToMin(lesson.seconds)}
+            </span>
+            <h1 className={styles.title}>{lesson.title}</h1>
+          </div>
+
+          <span className={styles.badgeLocked}>
+            <Lock size={14} /> Conteúdo Bloqueado
+          </span>
+        </div>
+
+        {/* Locked Access Barrier */}
+        <div className={styles.lockBarrierCard}>
+          <div className={styles.lockIconWrapper}>
+            <Lock size={34} />
+          </div>
+
+          <h2 className={styles.lockTitle}>Conteúdo Exclusivo para Alunos</h2>
+          <p className={styles.lockDescription}>
+            A aula <strong>&ldquo;{lesson.title}&rdquo;</strong> é restrita para alunos da plataforma.
+            Faça login com sua conta ou crie um cadastro gratuito para liberar o acesso imediato e registrar seu progresso.
+          </p>
+
+          <div className={styles.lockActions}>
+            <Link
+              href={`/login?redirect=/aula/${courseSlug}/${lessonSlug}`}
+              className="btn btn-primary btn-lg"
+            >
+              <LogIn size={18} />
+              <span>Fazer Login para Assistir</span>
+            </Link>
+
+            <Link href="/criar-conta" className="btn btn-lg">
+              <UserPlus size={18} />
+              <span>Criar Conta Gratuita</span>
+            </Link>
+
+            <Link href={`/cursos/${courseSlug}`} className="btn btn-sm">
+              <ArrowLeft size={16} />
+              <span>Voltar para o Curso</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Lesson Description */}
+        {lesson.description && (
+          <div className={styles.aboutCard}>
+            <h3 className={styles.aboutTitle}>Sobre esta aula</h3>
+            <p className={styles.aboutDescription}>{lesson.description}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`animate-fade-in ${styles.container}`}>
@@ -98,11 +176,16 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           <h1 className={styles.title}>{lesson.title}</h1>
         </div>
 
-        {completed && (
-          <span className={styles.badgeEmerald}>
-            <CheckCircle2 size={15} /> Aula Concluída
-          </span>
-        )}
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {!isAuthenticated && isFree && (
+            <span className={styles.badgeFree}>Aula Demonstrativa (Grátis)</span>
+          )}
+          {completed && (
+            <span className={styles.badgeEmerald}>
+              <CheckCircle2 size={15} /> Aula Concluída
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Video Player */}
@@ -153,11 +236,10 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
       {lesson.description && (
         <div className={styles.aboutCard}>
           <h3 className={styles.aboutTitle}>Sobre esta aula</h3>
-          <p className={styles.aboutDescription}>
-            {lesson.description}
-          </p>
+          <p className={styles.aboutDescription}>{lesson.description}</p>
         </div>
       )}
     </div>
   );
 }
+
