@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { BACKEND_URL } from '@/lib/config';
 
-async function handleLmsProxy(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+async function handleLmsProxy(
+  request: NextRequest,
+  { params }: { params: Promise<{ path: string[] }> },
+) {
   try {
     const { path } = await params;
     const pathStr = path.join('/');
@@ -36,13 +39,17 @@ async function handleLmsProxy(request: NextRequest, { params }: { params: Promis
 
     const contentType = res.headers.get('content-type') || '';
 
-    if (contentType.includes('application/pdf') || contentType.includes('octet-stream')) {
+    if (
+      contentType.includes('application/pdf') ||
+      contentType.includes('octet-stream')
+    ) {
       const arrayBuffer = await res.arrayBuffer();
       return new NextResponse(arrayBuffer, {
         status: res.status,
         headers: {
           'Content-Type': contentType,
-          'Content-Disposition': res.headers.get('content-disposition') || 'inline',
+          'Content-Disposition':
+            res.headers.get('content-disposition') || 'inline',
         },
       });
     }
@@ -56,4 +63,10 @@ async function handleLmsProxy(request: NextRequest, { params }: { params: Promis
   }
 }
 
-export { handleLmsProxy as GET, handleLmsProxy as POST, handleLmsProxy as DELETE, handleLmsProxy as PUT, handleLmsProxy as PATCH };
+export {
+  handleLmsProxy as GET,
+  handleLmsProxy as POST,
+  handleLmsProxy as DELETE,
+  handleLmsProxy as PUT,
+  handleLmsProxy as PATCH,
+};

@@ -20,8 +20,21 @@ export async function GET(_request: NextRequest) {
     });
 
     if (!sessionRes.ok) {
-      cookieStore.delete('__Secure-sid');
-      cookieStore.delete('lms_role');
+      cookieStore.set('__Secure-sid', '', {
+        path: '/',
+        maxAge: 0,
+        expires: new Date(0),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+      });
+      cookieStore.set('lms_role', '', {
+        path: '/',
+        maxAge: 0,
+        expires: new Date(0),
+        httpOnly: false,
+        sameSite: 'lax',
+      });
       return NextResponse.json({ role: 'public' }, { status: 200 });
     }
 

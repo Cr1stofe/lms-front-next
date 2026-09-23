@@ -24,7 +24,10 @@ function LoginForm() {
 
     const validation = loginSchema.safeParse({ email, password });
     if (!validation.success) {
-      setError(validation.error.issues[0]?.message || 'Preencha todos os campos corretamente');
+      setError(
+        validation.error.issues[0]?.message ||
+          'Preencha todos os campos corretamente',
+      );
       return;
     }
 
@@ -39,7 +42,7 @@ function LoginForm() {
         } else if (res.role === 'admin' || res.role === 'editor') {
           destination = '/admin/cursos';
         }
-        
+
         window.location.href = destination;
       } else {
         setError(res.error || 'Credenciais inválidas');
@@ -61,7 +64,9 @@ function LoginForm() {
       <div className={styles.card}>
         <div className={styles.header}>
           <h1 className={styles.title}>Entrar na Conta</h1>
-          <p className={styles.subtitle}>Acesse suas aulas, cursos e certificados</p>
+          <p className={styles.subtitle}>
+            Acesse suas aulas, cursos e certificados
+          </p>
         </div>
 
         {error && (
@@ -88,7 +93,13 @@ function LoginForm() {
           </div>
 
           <div className={styles.formGroup}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <label className={styles.formLabel} htmlFor="password">
                 Senha
               </label>
@@ -110,11 +121,7 @@ function LoginForm() {
             />
           </div>
 
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={loading}
-          >
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
             <LogIn size={18} />
             <span>{loading ? 'Entrando...' : 'Entrar na Plataforma'}</span>
           </button>
@@ -129,14 +136,14 @@ function LoginForm() {
             <button
               type="button"
               className={styles.quickLoginBtn}
-              onClick={() => handleQuickLogin('aluno@lms.com', 'aluno123')}
+              onClick={() => handleQuickLogin('aluno@lms.com', 'P@ssw0rd123')}
             >
               Preencher como Aluno
             </button>
             <button
               type="button"
               className={styles.quickLoginBtn}
-              onClick={() => handleQuickLogin('admin@lms.com', 'admin123')}
+              onClick={() => handleQuickLogin('admin@lms.com', 'P@ssw0rd123')}
             >
               Preencher como Admin
             </button>
@@ -144,7 +151,8 @@ function LoginForm() {
         </div>
 
         <div className={styles.footerLinks}>
-          Não tem uma conta? <Link href="/criar-conta">Cadastre-se gratuitamente</Link>
+          Não tem uma conta?{' '}
+          <Link href="/criar-conta">Cadastre-se gratuitamente</Link>
         </div>
       </div>
     </div>
@@ -153,7 +161,13 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="glass-card text-center" style={{ padding: '3rem' }}>Carregando formulário...</div>}>
+    <Suspense
+      fallback={
+        <div className="glass-card text-center" style={{ padding: '3rem' }}>
+          Carregando formulário...
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

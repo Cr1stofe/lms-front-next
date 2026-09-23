@@ -16,8 +16,10 @@ import {
   ChevronRight,
   ArrowLeft,
   Loader2,
+  Award,
 } from 'lucide-react';
 import styles from './course-detail.module.scss';
+import { API_BASE } from '@/lib/api-client';
 
 interface CourseDetailsProps {
   params: Promise<{ slug: string }>;
@@ -31,6 +33,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [completed, setCompleted] = useState<CompletedLesson[]>([]);
   const [loading, setLoading] = useState(true);
+  const [certificateId, setCertificateId] = useState<string>('');
 
   const loadCourseData = useCallback(async () => {
     setLoading(true);
@@ -39,6 +42,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
       setCourse(data.course);
       setLessons(data.lessons || []);
       setCompleted(data.completed || []);
+      setCertificateId(data.certificate || '');
     }
     setLoading(false);
   }, [slug]);
@@ -49,8 +53,15 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
   if (loading) {
     return (
-      <div className="glass-card text-center animate-fade-in" style={{ padding: '4rem 1.5rem' }}>
-        <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#818cf8' }} />
+      <div
+        className="glass-card text-center animate-fade-in"
+        style={{ padding: '4rem 1.5rem' }}
+      >
+        <Loader2
+          size={32}
+          className="animate-spin"
+          style={{ margin: '0 auto 1rem', color: '#818cf8' }}
+        />
         <p>Carregando curso...</p>
       </div>
     );
@@ -58,9 +69,15 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
   if (!course) {
     return (
-      <div className="glass-card text-center animate-fade-in" style={{ padding: '3.5rem 1.5rem' }}>
+      <div
+        className="glass-card text-center animate-fade-in"
+        style={{ padding: '3.5rem 1.5rem' }}
+      >
         <h2 style={{ marginBottom: '1rem' }}>Curso não encontrado</h2>
-        <p style={{ marginBottom: '2rem' }}>O curso com identificador &quot;{slug}&quot; não existe ou foi removido.</p>
+        <p style={{ marginBottom: '2rem' }}>
+          O curso com identificador &quot;{slug}&quot; não existe ou foi
+          removido.
+        </p>
         <Link href="/cursos" className="btn btn-primary">
           <ArrowLeft size={16} /> Voltar para o Catálogo
         </Link>
@@ -69,9 +86,15 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
   }
 
   const completedCount = completed.length;
-  const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
+  const progress =
+    lessons.length > 0
+      ? Math.round((completedCount / lessons.length) * 100)
+      : 0;
   const isCompleted = progress >= 100;
-  const firstUncompletedLesson = lessons.find((l) => !completed.some((c) => c.lesson_id == l.id || c.lessonId == l.id)) || lessons[0];
+  const firstUncompletedLesson =
+    lessons.find(
+      (l) => !completed.some((c) => c.lesson_id == l.id || c.lessonId == l.id),
+    ) || lessons[0];
 
   const handleReset = async () => {
     if (confirm('Tem certeza que deseja reiniciar o progresso deste curso?')) {
@@ -108,9 +131,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
         </div>
 
         <h1 className={styles.title}>{course.title}</h1>
-        <p className={styles.description}>
-          {course.description}
-        </p>
+        <p className={styles.description}>{course.description}</p>
 
         {role === 'user' && (
           <div className={styles.progressContainer}>
@@ -128,15 +149,54 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
           </div>
         )}
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-          {firstUncompletedLesson && (
-            <Link
-              href={`/aula/${course.slug}/${firstUncompletedLesson.slug}`}
-              className={styles.startBtn}
-            >
-              <Play size={18} />
-              <span>{progress > 0 && !isCompleted ? 'Continuar de Onde Parou' : 'Iniciar Curso'}</span>
-            </Link>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+            alignItems: 'center',
+          }}
+        >
+          {isCompleted ? (
+            <>
+              {certificateId ? (
+                <a
+                  href={`${API_BASE}/lms/certificate/${certificateId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.certificateBtn}
+                >
+                  <Award size={18} />
+                  <span>Ver Certificado</span>
+                </a>
+              ) : (
+                <Link href="/certificados" className={styles.certificateBtn}>
+                  <Award size={18} />
+                  <span>Ver Certificados</span>
+                </Link>
+              )}
+              {lessons[0] && (
+                <Link
+                  href={`/aula/${course.slug}/${lessons[0].slug}`}
+                  className={styles.secondaryBtn}
+                >
+                  <Play size={16} />
+                  <span>Rever Aulas</span>
+                </Link>
+              )}
+            </>
+          ) : (
+            firstUncompletedLesson && (
+              <Link
+                href={`/aula/${course.slug}/${firstUncompletedLesson.slug}`}
+                className={styles.startBtn}
+              >
+                <Play size={18} />
+                <span>
+                  {progress > 0 ? 'Continuar de Onde Parou' : 'Iniciar Curso'}
+                </span>
+              </Link>
+            )
           )}
         </div>
       </div>
@@ -150,7 +210,9 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
 
         <div className={styles.lessonsList}>
           {lessons.map((lesson, idx) => {
-            const isLessonDone = completed.some((x) => x.lesson_id == lesson.id || x.lessonId == lesson.id);
+            const isLessonDone = completed.some(
+              (x) => x.lesson_id == lesson.id || x.lessonId == lesson.id,
+            );
 
             return (
               <Link
@@ -159,17 +221,19 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 className={styles.lessonItem}
               >
                 <div className={styles.lessonLeft}>
-                  <div className={`${styles.lessonNumber} ${isLessonDone ? styles.done : ''}`}>
+                  <div
+                    className={`${styles.lessonNumber} ${isLessonDone ? styles.done : ''}`}
+                  >
                     {isLessonDone ? <CheckCircle2 size={16} /> : idx + 1}
                   </div>
 
                   <div className={styles.lessonText}>
-                    <h3 className={`${styles.lessonTitle} ${isLessonDone ? styles.done : ''}`}>
+                    <h3
+                      className={`${styles.lessonTitle} ${isLessonDone ? styles.done : ''}`}
+                    >
                       {lesson.title}
                     </h3>
-                    <p className={styles.lessonDesc}>
-                      {lesson.description}
-                    </p>
+                    <p className={styles.lessonDesc}>{lesson.description}</p>
                   </div>
                 </div>
 

@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     if (sid) {
       cookieStore.set('__Secure-sid', sid, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 7,
