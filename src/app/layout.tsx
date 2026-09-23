@@ -34,17 +34,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import { cookies } from 'next/headers';
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const initialRole = cookieStore.get('lms_role')?.value || 'public';
+
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable} ${spaceGrotesk.variable}`}>
       <body>
-        <SessionInitializer />
+        <SessionInitializer initialRole={initialRole} />
         <div className="app-container">
-          <Navbar />
+          <Navbar initialRole={initialRole} />
           <main className="main-content">{children}</main>
           <Footer />
         </div>

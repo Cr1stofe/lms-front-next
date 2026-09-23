@@ -18,8 +18,11 @@ export async function POST(request: NextRequest) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { success: false, error: validation.error.issues[0]?.message || 'Dados inválidos' },
-        { status: 400 }
+        {
+          success: false,
+          error: validation.error.issues[0]?.message || 'Dados inválidos',
+        },
+        { status: 400 },
       );
     }
 
@@ -35,14 +38,17 @@ export async function POST(request: NextRequest) {
 
     if (!backendRes.ok) {
       return NextResponse.json(
-        { success: false, error: data?.title || data?.message || 'Credenciais inválidas' },
-        { status: backendRes.status }
+        {
+          success: false,
+          error: data?.title || data?.message || 'Credenciais inválidas',
+        },
+        { status: backendRes.status },
       );
     }
 
     const setCookieHeaders = backendRes.headers.getSetCookie
       ? backendRes.headers.getSetCookie()
-      : [backendRes.headers.get('set-cookie')].filter(Boolean) as string[];
+      : ([backendRes.headers.get('set-cookie')].filter(Boolean) as string[]);
 
     const sid = extractSid(setCookieHeaders);
 
@@ -57,7 +63,10 @@ export async function POST(request: NextRequest) {
       });
 
       if (sessionRes.ok) {
-        userData = (await sessionRes.json().catch(() => ({}))) as Record<string, unknown>;
+        userData = (await sessionRes.json().catch(() => ({}))) as Record<
+          string,
+          unknown
+        >;
         userRole = String(userData?.role || 'user').toLowerCase();
       }
     }
@@ -84,19 +93,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      role: userRole,
       user: {
-        name: (userData?.name as string) || (userRole === 'admin' ? 'Administrador' : 'Aluno'),
-        email: body.email,
-        username: (userData?.username as string) || body.email.split('@')[0],
+        name: userData?.name ?? '',
+        email: userData?.email ?? '',
+        username: userData?.username ?? '',
         role: userRole,
       },
     });
   } catch (error) {
     console.error('BFF Login Error:', error);
     return NextResponse.json(
-      { success: false, error: 'Falha na comunicação com o servidor de autenticação' },
-      { status: 500 }
+      {
+        success: false,
+        error: 'Falha na comunicação com o servidor de autenticação',
+      },
+      { status: 500 },
     );
   }
 }

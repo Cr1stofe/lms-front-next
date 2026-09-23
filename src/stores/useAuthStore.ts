@@ -6,6 +6,7 @@ interface AuthState {
   user: User | null;
   role: Role;
   loading: boolean;
+  isHydrated: boolean;
   refreshSession: () => Promise<Role>;
   login: (email: string, password: string) => Promise<{ success: boolean; role?: Role; error?: string }>;
   register: (name: string, username: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
@@ -18,6 +19,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   role: 'public',
   loading: true,
+  isHydrated: false,
 
   refreshSession: async (): Promise<Role> => {
     try {
@@ -31,10 +33,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         role: userRole,
       } : null;
 
-      set({ role: userRole, user: userObj, loading: false });
+      set({ role: userRole, user: userObj, loading: false, isHydrated: true });
       return userRole;
     } catch {
-      set({ role: 'public', user: null, loading: false });
+      set({ role: 'public', user: null, loading: false, isHydrated: true });
       return 'public';
     }
   },
@@ -42,8 +44,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (email: string, password: string) => {
     try {
       const { data } = await authService.login(email, password);
-      
-      const activeRole = (data?.role || await get().refreshSession()) as Role;
+
+      const activeRole = (data?.user?.role || (await get().refreshSession())) as Role;
       set({
         role: activeRole,
         user: data?.user || (activeRole !== 'public' ? {

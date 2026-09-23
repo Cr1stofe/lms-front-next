@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { Course } from '@/lib/types';
 import { Clock, BookOpen, ArrowRight } from 'lucide-react';
-import { useAuthStore } from '@/stores/useAuthStore';
 import styles from './CourseCard.module.scss';
 
 interface CourseCardProps {
@@ -12,8 +11,6 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
-  const role = useAuthStore((state) => state.role);
-
   return (
     <Link href={`/cursos/${course.slug}`} className={styles.card}>
       <div className={styles.header}>
@@ -30,11 +27,11 @@ export default function CourseCard({ course }: CourseCardProps) {
 
       <div className={styles.footer}>
         <span className={styles.statusText}>
-          {role === 'user' ? 'Disponível' : 'Acesso Liberado'}
+          Disponível
         </span>
 
         <span className={styles.accessBtn}>
-          <span>{role === 'user' ? 'Acessar Curso' : 'Ver Curso'}</span>
+          <span>Ver Curso</span>
           <ArrowRight size={14} className={styles.accessIcon} />
         </span>
       </div>
