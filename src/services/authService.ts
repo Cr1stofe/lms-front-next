@@ -10,7 +10,7 @@ export interface SessionResponse {
 }
 
 export interface LoginResponse {
-  role?: Role;
+  success?: boolean;
   user?: User;
 }
 

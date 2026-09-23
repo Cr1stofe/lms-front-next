@@ -21,9 +21,14 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 
-export default function Navbar() {
-  const role = useAuthStore((state) => state.role);
+interface NavbarProps {
+  initialRole?: string;
+}
+
+export default function Navbar({ initialRole = 'public' }: NavbarProps) {
+  const storeRole = useAuthStore((state) => state.role);
   const user = useAuthStore((state) => state.user);
+  const isHydrated = useAuthStore((state) => state.isHydrated);
   const logout = useAuthStore((state) => state.logout);
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,7 +59,8 @@ export default function Navbar() {
     window.location.href = '/login';
   }, [logout]);
 
-  const currentRole = (role || 'public').toLowerCase();
+  const activeRole = isHydrated ? storeRole : (initialRole as string);
+  const currentRole = (activeRole || 'public').toLowerCase();
   const isAuthenticated = currentRole !== 'public';
   const isAdmin = currentRole === 'admin' || currentRole === 'editor';
 
