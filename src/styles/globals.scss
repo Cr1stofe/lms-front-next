@@ -160,3 +160,64 @@ a {
   }
 }
 
+// Global Form Utilities
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: $font-display;
+}
+
+.form-input {
+  @include input-base;
+}
+
+.form-select {
+  @include select-base;
+}
+
+.form-textarea {
+  @include textarea-base;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+// Global Badge Utilities
+.badge {
+  @include badge-base;
+
+  &.badge-indigo {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: $accent-indigo-light;
+  }
+
+  &.badge-emerald {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: $accent-emerald-light;
+  }
+
+  &.badge-cyan {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.3);
+    color: #22d3ee;
+  }
+}
+
+

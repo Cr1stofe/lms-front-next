@@ -6,6 +6,7 @@
   flex-direction: column;
   gap: $spacing-10;
   animation: fadeIn 0.4s ease-out;
+  width: 100%;
 }
 
 .adminCard {
@@ -27,13 +28,18 @@
 }
 
 .titleWrapper {
-  .badge {
-    margin-bottom: $spacing-2;
+  .badge,
+  .badgeIndigo,
+  .badgeEmerald,
+  .badgeCyan,
+  span:first-child {
+    margin-bottom: 0.75rem;
+    display: inline-flex;
   }
 
   h1 {
     font-size: 2.25rem;
-    font-family: $font-serif;
+    font-family: $font-display;
     color: $color-text-primary;
     letter-spacing: -0.02em;
     margin-bottom: $spacing-2;
@@ -93,6 +99,86 @@
   }
 }
 
+.selectHighlightCard {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  transition: border-color $transition-normal;
+
+  &:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+}
+
+// Form Elements
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.formLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: $font-display;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formInput {
+  @include input-base;
+}
+
+.formSelect {
+  @include select-base;
+}
+
+.formTextarea {
+  @include textarea-base;
+}
+
+.formHelper {
+  font-size: 0.75rem;
+  color: $text-muted;
+  margin-top: 0.2rem;
+}
+
+.badgeIndigo {
+  @include badge-base;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: $accent-indigo-light;
+}
+
+.badgeEmerald {
+  @include badge-base;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: $accent-emerald-light;
+}
+
+.badgeCyan {
+  @include badge-base;
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #22d3ee;
+}
+
 .searchForm {
   position: relative;
   margin-bottom: $spacing-8;
@@ -106,9 +192,11 @@
     display: flex;
     align-items: center;
     pointer-events: none;
+    z-index: 1;
   }
 
   .searchInput {
+    @include input-base;
     padding-left: 3rem;
     background: rgba(9, 9, 11, 0.6);
   }
@@ -135,6 +223,7 @@
   &:hover {
     background: rgba(255, 255, 255, 0.04);
     border-color: $color-border-light;
+    transform: translateY(-1px);
   }
 
   .userInfo {
@@ -143,20 +232,23 @@
     gap: $spacing-4;
 
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
 
       &.avatarAdmin {
-        background: rgba(99, 102, 241, 0.15);
+        background: rgba(99, 102, 241, 0.18);
+        border: 1px solid rgba(99, 102, 241, 0.35);
         color: $color-indigo-400;
       }
 
       &.avatarUser {
         background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         color: $color-text-secondary;
       }
     }
@@ -165,6 +257,7 @@
       font-weight: 600;
       color: $color-text-primary;
       font-size: 1.05rem;
+      margin-bottom: 0.1rem;
     }
 
     .userEmail {
@@ -175,18 +268,24 @@
 }
 
 .uploadDropzone {
-  border: 2px dashed $color-border-subtle;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
   border-radius: $radius-md;
-  padding: $spacing-6;
+  padding: 1.75rem 1.25rem;
   text-align: center;
   background: rgba(255, 255, 255, 0.02);
   cursor: pointer;
   position: relative;
-  transition: border-color $transition-normal, background $transition-normal, transform $transition-normal;
+  transition: border-color $transition-normal, background-color $transition-normal, transform $transition-normal;
 
   &:hover {
-    border-color: $color-indigo-500;
-    background: rgba(99, 102, 241, 0.05);
+    border-color: $accent-primary;
+    background: rgba(99, 102, 241, 0.06);
+    transform: translateY(-1px);
+  }
+
+  &.hasFile {
+    border-color: $accent-emerald;
+    background: rgba(16, 185, 129, 0.06);
   }
 
   input[type='file'] {
@@ -201,11 +300,17 @@
   .uploadIcon {
     color: $color-indigo-400;
     margin: 0 auto $spacing-2;
+    transition: transform $transition-normal;
+  }
+
+  &:hover .uploadIcon {
+    transform: scale(1.1);
   }
 
   .uploadText {
     font-size: 0.9rem;
     color: $color-text-primary;
+    font-weight: 500;
   }
 }
 
@@ -239,3 +344,4 @@
     color: $color-indigo-400;
   }
 }
+

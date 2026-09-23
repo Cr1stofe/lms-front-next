@@ -130,7 +130,7 @@ export default function AdminLessonsPage() {
       <div className={styles.adminCard}>
         <div className={styles.headerRow}>
           <div className={styles.titleWrapper}>
-            <span className={`badge badge-indigo ${styles.badge}`}>
+            <span className={styles.badgeIndigo}>
               Painel Administrativo
             </span>
             <h1>Gerenciar Aulas</h1>
@@ -158,54 +158,59 @@ export default function AdminLessonsPage() {
           </div>
         )}
 
-        <div className="form-group" style={{ marginBottom: '2rem' }}>
-          <label className="form-label" htmlFor="lesson-select">
-            Selecionar Aula para Edição
-          </label>
-          <select
-            id="lesson-select"
-            className="form-select"
-            value={selectedLessonIndex}
-            onChange={(e) => setSelectedLessonIndex(e.target.value)}
-          >
-            <option value="new">+ Cadastrar Nova Aula</option>
-            {adminLessons.map((lesson, idx) => {
-              const raw = lesson as Lesson & { course_slug?: string };
-              return (
-                <option key={lesson.id || idx} value={idx}>
-                  {lesson.courseSlug || raw.course_slug} - {lesson.slug}
-                </option>
-              );
-            })}
-          </select>
+        <div className={styles.selectHighlightCard}>
+          <div className={styles.formGroup} style={{ marginBottom: 0 }}>
+            <label className={styles.formLabel} htmlFor="lesson-select">
+              <span>Selecionar Aula para Edição</span>
+              <span className={styles.badgeIndigo}>
+                {selectedLessonIndex === 'new' ? 'Modo Cadastro' : 'Modo Edição'}
+              </span>
+            </label>
+            <select
+              id="lesson-select"
+              className={styles.formSelect}
+              value={selectedLessonIndex}
+              onChange={(e) => setSelectedLessonIndex(e.target.value)}
+            >
+              <option value="new">+ Cadastrar Nova Aula</option>
+              {adminLessons.map((lesson, idx) => {
+                const raw = lesson as Lesson & { course_slug?: string };
+                return (
+                  <option key={lesson.id || idx} value={idx}>
+                    {lesson.courseSlug || raw.course_slug} - {lesson.slug} ({lesson.title})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-course">
-                Curso (Course Slug)
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-course">
+                Slug do Curso Associado
               </label>
               <input
                 id="lesson-course"
                 type="text"
-                className="form-input"
-                placeholder="slug-do-curso"
+                className={styles.formInput}
+                placeholder="ex: react-do-zero"
                 value={courseSlug}
                 onChange={(e) => setCourseSlug(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-slug">
-                Slug da Aula
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-slug">
+                Slug da Aula (Identificador Único)
               </label>
               <input
                 id="lesson-slug"
                 type="text"
-                className="form-input"
-                placeholder="slug-da-aula"
+                className={styles.formInput}
+                placeholder="ex: componentes-e-props"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 required
@@ -213,31 +218,31 @@ export default function AdminLessonsPage() {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-title">
-                Título
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-title">
+                Título da Aula
               </label>
               <input
                 id="lesson-title"
                 type="text"
-                className="form-input"
-                placeholder="Título da Aula"
+                className={styles.formInput}
+                placeholder="ex: Componentes e Passagem de Props"
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-order">
-                Ordem
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-order">
+                Ordem / Posição no Curso
               </label>
               <input
                 id="lesson-order"
                 type="number"
                 min="1"
-                className="form-input"
+                className={styles.formInput}
                 value={order}
                 onChange={(e) => setOrder(Number(e.target.value))}
                 required
@@ -245,85 +250,90 @@ export default function AdminLessonsPage() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="lesson-desc">
-              Descrição
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="lesson-desc">
+              Descrição e Conteúdo da Aula
             </label>
             <textarea
               id="lesson-desc"
-              className="form-textarea"
-              placeholder="Descrição da aula..."
+              className={styles.formTextarea}
+              placeholder="Descreva os tópicos abordados nesta aula..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-seconds">
-                Segundos
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-seconds">
+                Duração da Aula (Segundos)
               </label>
               <input
                 id="lesson-seconds"
                 type="number"
                 min="0"
-                className="form-input"
+                className={styles.formInput}
+                placeholder="ex: 480 (8 minutos)"
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="lesson-free">
-                Gratuita
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="lesson-free">
+                Disponibilidade (Gratuita para Visitantes)
               </label>
               <select
                 id="lesson-free"
-                className="form-select"
+                className={styles.formSelect}
                 value={free}
                 onChange={(e) => setFree(Number(e.target.value))}
               >
-                <option value={0}>0 - Não</option>
-                <option value={1}>1 - Sim</option>
+                <option value={0}>🔒 0 - Restrita (Apenas para Alunos Cadastrados)</option>
+                <option value={1}>🌐 1 - Gratuita (Aberta como Prévia/Demonstração)</option>
               </select>
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="lesson-video">
-              Vídeo Path
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="lesson-video">
+              Caminho ou URL do Vídeo
             </label>
             <input
               id="lesson-video"
               type="text"
-              className="form-input"
+              className={styles.formInput}
               placeholder="/files/public/... ou https://..."
               value={videoPath}
               onChange={(e) => setVideoPath(e.target.value)}
             />
           </div>
 
-          <div className="form-group" style={{ marginTop: '0.5rem' }}>
-            <label className="form-label">Arquivo de Vídeo (Upload)</label>
-            <div className={styles.uploadDropzone}>
+          <div className={styles.formGroup} style={{ marginTop: '0.5rem' }}>
+            <label className={styles.formLabel}>
+              <span>Upload de Arquivo de Vídeo</span>
+              {selectedFile && <span className={styles.badgeEmerald}>Arquivo Carregado</span>}
+            </label>
+            <div className={`${styles.uploadDropzone} ${selectedFile ? styles.hasFile : ''}`}>
               <input
                 type="file"
                 accept="video/*"
                 onChange={handleFileChange}
               />
-              <UploadCloud size={24} className={styles.uploadIcon} />
+              <UploadCloud size={28} className={styles.uploadIcon} />
               <div className={styles.uploadText}>
-                {selectedFile ? `Arquivo selecionado: ${selectedFile.name}` : 'Selecionar arquivo de vídeo'}
+                {selectedFile ? `Arquivo: ${selectedFile.name}` : 'Clique ou arraste o arquivo de vídeo para fazer upload'}
               </div>
+              <p className={styles.formHelper}>Suporta MP4, WebM ou outros formatos de vídeo compatíveis</p>
             </div>
           </div>
 
           <div className={styles.formActions}>
             <button type="submit" disabled={loading} className="btn btn-primary btn-lg">
               <Save size={18} />
-              <span>{loading ? 'Salvando...' : 'Criar/Atualizar Aula'}</span>
+              <span>{loading ? 'Salvando Aula...' : selectedLessonIndex === 'new' ? 'Cadastrar Aula' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>

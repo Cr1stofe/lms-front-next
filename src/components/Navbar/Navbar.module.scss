@@ -197,3 +197,193 @@
     }
   }
 }
+
+// Desktop User Profile Pill & Wrapper
+.desktopNavWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  @include tablet {
+    display: none;
+  }
+}
+
+.userProfilePill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-pill;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-primary;
+  transition: border-color $transition-normal, background-color $transition-normal;
+  user-select: none;
+
+  &:hover {
+    border-color: $border-hover;
+    background: rgba(255, 255, 255, 0.07);
+  }
+}
+
+.userAvatarSmall {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.2);
+  color: $accent-indigo-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.admin {
+    background: rgba(99, 102, 241, 0.28);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+  }
+}
+
+.userNameText {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: $font-body;
+}
+
+.roleTag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.45rem;
+  border-radius: $radius-pill;
+  background: rgba(255, 255, 255, 0.06);
+  color: $text-secondary;
+  font-family: $font-display;
+
+  &.admin {
+    background: rgba(99, 102, 241, 0.2);
+    color: $accent-indigo-light;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+}
+
+// Logout Confirmation Modal
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modalCard {
+  background: #13141a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: $radius-lg;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(244, 63, 94, 0.15);
+  animation: modalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+}
+
+.modalIconWrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(244, 63, 94, 0.16);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fb7185;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 25px rgba(244, 63, 94, 0.25);
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.modalDescription {
+  font-size: 0.92rem;
+  color: #d4d4d8;
+  line-height: 1.6;
+  margin-bottom: 1.85rem;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  justify-content: center;
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.logoutConfirmBtn {
+  @include button-base;
+  background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+
+  &:hover {
+    background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+    box-shadow: 0 6px 22px rgba(244, 63, 94, 0.55);
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+}
+
+.logoutCancelBtn {
+  @include button-base;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: $border-subtle;
+  color: $text-primary;
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: $border-hover;
+    transform: translateY(-2px);
+  }
+}
+

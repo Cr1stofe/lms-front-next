@@ -84,7 +84,7 @@ export default function AdminCoursesPage() {
       <div className={styles.adminCard}>
         <div className={styles.headerRow}>
           <div className={styles.titleWrapper}>
-            <span className={`badge badge-indigo ${styles.badge}`}>
+            <span className={styles.badgeIndigo}>
               Painel Administrativo
             </span>
             <h1>Gerenciar Cursos</h1>
@@ -112,51 +112,56 @@ export default function AdminCoursesPage() {
           </div>
         )}
 
-        <div className="form-group" style={{ marginBottom: '2rem' }}>
-          <label className="form-label" htmlFor="course-select">
-            Selecionar Curso para Edição
-          </label>
-          <select
-            id="course-select"
-            className="form-select"
-            value={selectedCourseIndex}
-            onChange={(e) => setSelectedCourseIndex(e.target.value)}
-          >
-            <option value="new">+ Criar Novo Curso</option>
-            {courses.map((course, idx) => (
-              <option key={course.id} value={idx}>
-                {course.slug} - {course.title}
-              </option>
-            ))}
-          </select>
+        <div className={styles.selectHighlightCard}>
+          <div className={styles.formGroup} style={{ marginBottom: 0 }}>
+            <label className={styles.formLabel} htmlFor="course-select">
+              <span>Selecionar Curso para Edição</span>
+              <span className={styles.badgeIndigo}>
+                {selectedCourseIndex === 'new' ? 'Modo Criação' : 'Modo Edição'}
+              </span>
+            </label>
+            <select
+              id="course-select"
+              className={styles.formSelect}
+              value={selectedCourseIndex}
+              onChange={(e) => setSelectedCourseIndex(e.target.value)}
+            >
+              <option value="new">+ Criar Novo Curso</option>
+              {courses.map((course, idx) => (
+                <option key={course.id} value={idx}>
+                  {course.slug} - {course.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label" htmlFor="course-slug">
-                Slug
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="course-slug">
+                Slug do Curso (Identificador Único)
               </label>
               <input
                 id="course-slug"
                 type="text"
-                className="form-input"
-                placeholder="slug-do-curso"
+                className={styles.formInput}
+                placeholder="ex: react-do-zero"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="course-title">
-                Título
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="course-title">
+                Título do Curso
               </label>
               <input
                 id="course-title"
                 type="text"
-                className="form-input"
-                placeholder="Título do Curso"
+                className={styles.formInput}
+                placeholder="ex: Curso de React Avançado"
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 required
@@ -164,44 +169,44 @@ export default function AdminCoursesPage() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="course-desc">
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="course-desc">
               Descrição
             </label>
             <textarea
               id="course-desc"
-              className="form-textarea"
-              placeholder="Descrição do curso..."
+              className={styles.formTextarea}
+              placeholder="Descreva o conteúdo, objetivos e metodologia do curso..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label" htmlFor="course-lessons">
-                Aulas
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="course-lessons">
+                Quantidade de Aulas
               </label>
               <input
                 id="course-lessons"
                 type="number"
                 min="0"
-                className="form-input"
+                className={styles.formInput}
                 value={lessonsCount}
                 onChange={(e) => setLessonsCount(Number(e.target.value))}
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="course-hours">
-                Horas
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="course-hours">
+                Carga Horária (Horas)
               </label>
               <input
                 id="course-hours"
                 type="number"
                 min="1"
-                className="form-input"
+                className={styles.formInput}
                 value={hours}
                 onChange={(e) => setHours(Number(e.target.value))}
                 required
@@ -212,7 +217,7 @@ export default function AdminCoursesPage() {
           <div className={styles.formActions}>
             <button type="submit" disabled={loading} className="btn btn-primary btn-lg">
               <Save size={18} />
-              <span>{loading ? 'Salvando...' : 'Criar/Atualizar Curso'}</span>
+              <span>{loading ? 'Salvando Curso...' : selectedCourseIndex === 'new' ? 'Cadastrar Curso' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>
