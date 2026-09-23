@@ -3,7 +3,9 @@ import type { NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const role = request.cookies.get('lms_role')?.value?.toLowerCase() || 'public';
+  const sid = request.cookies.get('__Secure-sid')?.value;
+  const rawRole = request.cookies.get('lms_role')?.value?.toLowerCase();
+  const role = sid ? rawRole || 'user' : 'public';
 
   const isCertificadosRoute = pathname.startsWith('/certificados');
   const isAdminRoute = pathname.startsWith('/admin');
@@ -39,10 +41,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/certificados/:path*',
-    '/admin/:path*',
-    '/login',
-    '/criar-conta',
-  ],
+  matcher: ['/certificados/:path*', '/admin/:path*', '/login', '/criar-conta'],
 };

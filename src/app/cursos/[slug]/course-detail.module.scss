@@ -105,6 +105,25 @@
   font-size: 1rem;
 }
 
+.certificateBtn {
+  @include button-emerald;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+}
+
+.secondaryBtn {
+  @include button-base;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: $border-subtle;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: $border-hover;
+  }
+}
+
 .curriculumHeader {
   @include flex-between;
   margin-bottom: 1rem;

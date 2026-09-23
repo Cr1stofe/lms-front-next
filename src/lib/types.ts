@@ -1,4 +1,11 @@
-export type Role = 'admin' | 'editor' | 'user' | 'public' | 'ADMIN' | 'EDITOR' | 'USER';
+export type Role =
+  | 'admin'
+  | 'editor'
+  | 'user'
+  | 'public'
+  | 'ADMIN'
+  | 'EDITOR'
+  | 'USER';
 
 export interface User {
   id?: string | number;
@@ -62,4 +69,5 @@ export interface CourseDetailsResponse {
   course: Course;
   lessons: Lesson[];
   completed: CompletedLesson[];
+  certificate: string | null;
 }

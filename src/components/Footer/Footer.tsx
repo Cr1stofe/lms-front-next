@@ -1,7 +1,3 @@
-'use client';
-
-import React from 'react';
-import { Database } from 'lucide-react';
 import styles from './Footer.module.scss';
 
 export default function Footer() {
@@ -12,12 +8,6 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} Tiny LMS</span>
           <span>•</span>
           <span>Next.js 16</span>
-        </div>
-
-        <div>
-          <span className={styles.badge}>
-            <Database size={12} /> Backend API Conectado
-          </span>
         </div>
       </div>
     </footer>
