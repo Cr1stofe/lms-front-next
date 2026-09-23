@@ -15,7 +15,7 @@ export default function CourseCard({ course }: CourseCardProps) {
   const role = useAuthStore((state) => state.role);
 
   return (
-    <div className={styles.card}>
+    <Link href={`/cursos/${course.slug}`} className={styles.card}>
       <div className={styles.header}>
         <span className={styles.badgeIndigo}>
           <BookOpen size={12} /> {course.lessons} aulas
@@ -26,23 +26,18 @@ export default function CourseCard({ course }: CourseCardProps) {
       </div>
 
       <h3 className={styles.title}>{course.title}</h3>
-      <p className={styles.description}>
-        {course.description}
-      </p>
+      <p className={styles.description}>{course.description}</p>
 
       <div className={styles.footer}>
         <span className={styles.statusText}>
           {role === 'user' ? 'Disponível' : 'Acesso Liberado'}
         </span>
 
-        <Link
-          href={`/cursos/${course.slug}`}
-          className={styles.accessBtn}
-        >
+        <span className={styles.accessBtn}>
           <span>{role === 'user' ? 'Acessar Curso' : 'Ver Curso'}</span>
-          <ArrowRight size={14} />
-        </Link>
+          <ArrowRight size={14} className={styles.accessIcon} />
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
