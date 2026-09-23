@@ -9,6 +9,7 @@ export async function proxy(request: NextRequest) {
 
   const isCertificadosRoute = pathname.startsWith('/certificados');
   const isAdminRoute = pathname.startsWith('/admin');
+  const isAdminUsuariosRoute = pathname.startsWith('/admin/usuarios');
   const isAuthRoute = pathname === '/login' || pathname === '/criar-conta';
 
   if (isAdminRoute) {
@@ -19,6 +20,10 @@ export async function proxy(request: NextRequest) {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
+    }
+
+    if (isAdminUsuariosRoute && role === 'editor') {
+      return NextResponse.redirect(new URL('/admin/cursos', request.url));
     }
   }
 

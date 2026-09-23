@@ -39,7 +39,6 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  // Handle escape key to close modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showLogoutModal) {
@@ -75,7 +74,6 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
             <span>Tiny LMS</span>
           </Link>
 
-          {/* Desktop Navigation & User Profile */}
           <div className={styles.desktopNavWrapper}>
             <nav className={styles.menu}>
               {!isAuthenticated && (
@@ -123,17 +121,18 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
                   >
                     <Video size={14} /> Aulas
                   </Link>
-                  <Link
-                    href="/admin/usuarios"
-                    className={`${styles.navLink} ${pathname === '/admin/usuarios' ? styles.active : ''}`}
-                  >
-                    <Users size={14} /> Usuários
-                  </Link>
+                  {currentRole === 'admin' && (
+                    <Link
+                      href="/admin/usuarios"
+                      className={`${styles.navLink} ${pathname === '/admin/usuarios' ? styles.active : ''}`}
+                    >
+                      <Users size={14} /> Usuários
+                    </Link>
+                  )}
                 </>
               )}
             </nav>
 
-            {/* Desktop Logged User Pill & Logout Button */}
             {isAuthenticated && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <div className={styles.userProfilePill} title={user?.email || 'Usuário conectado'}>
@@ -162,7 +161,6 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
             )}
           </div>
 
-          {/* Mobile Hamburger Button */}
           <button
             className={styles.mobileMenuBtn}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -172,7 +170,6 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
           </button>
         </div>
 
-        {/* Mobile Drawer Menu */}
         {mobileMenuOpen && (
           <div className={styles.drawer}>
             {user && (
@@ -252,12 +249,14 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
                   >
                     <Video size={18} /> Gerenciar Aulas
                   </Link>
-                  <Link
-                    href="/admin/usuarios"
-                    className={`${styles.drawerBtn} ${pathname === '/admin/usuarios' ? styles.active : ''}`}
-                  >
-                    <Users size={18} /> Gestão de Usuários
-                  </Link>
+                  {currentRole === 'admin' && (
+                    <Link
+                      href="/admin/usuarios"
+                      className={`${styles.drawerBtn} ${pathname === '/admin/usuarios' ? styles.active : ''}`}
+                    >
+                      <Users size={18} /> Gestão de Usuários
+                    </Link>
+                  )}
                   <button
                     type="button"
                     onClick={() => {
@@ -275,7 +274,6 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
         )}
       </header>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div
           className={styles.modalOverlay}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Plus_Jakarta_Sans, Space_Grotesk } from 'next/font/google';
 import '@/styles/globals.scss';
+import { Toaster } from 'sonner';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SessionInitializer from '@/components/SessionInitializer';
@@ -48,6 +49,7 @@ export default async function RootLayout({
     <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable} ${spaceGrotesk.variable}`}>
       <body>
         <SessionInitializer initialRole={initialRole} />
+        <Toaster position="top-right" richColors theme="dark" closeButton />
         <div className="app-container">
           <Navbar initialRole={initialRole} />
           <main className="main-content">{children}</main>

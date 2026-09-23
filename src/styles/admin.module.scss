@@ -152,6 +152,22 @@
   @include textarea-base;
 }
 
+.inputError {
+  border-color: rgba(244, 63, 94, 0.7) !important;
+  background: rgba(244, 63, 94, 0.06) !important;
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2) !important;
+}
+
+.formErrorMsg {
+  font-size: 0.8rem;
+  color: $color-rose-400;
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
 .formHelper {
   font-size: 0.75rem;
   color: $text-muted;

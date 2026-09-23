@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { useLMSStore } from '@/stores/useLMSStore';
 import { lmsService } from '@/services/lmsService';
-import { upsertCourseSchema } from '@/lib/schemas/lms';
+import { upsertCourseSchema, UpsertCourseInput } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
-import { PlusCircle, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { PlusCircle, Save } from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 
 export default function AdminCoursesPage() {
@@ -13,69 +16,67 @@ export default function AdminCoursesPage() {
   const fetchCourses = useLMSStore((state) => state.fetchCourses);
 
   const [selectedCourseIndex, setSelectedCourseIndex] = useState<string>('new');
-  const [slug, setSlug] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [lessonsCount, setLessonsCount] = useState<number>(0);
-  const [hours, setHours] = useState<number>(1);
-  const [feedback, setFeedback] = useState<{ type: 'ok' | 'fail'; text: string } | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<UpsertCourseInput>({
+    resolver: zodResolver(upsertCourseSchema),
+    defaultValues: {
+      slug: '',
+      title: '',
+      description: '',
+      lessons: 0,
+      hours: 1,
+    },
+  });
 
   useEffect(() => {
     if (selectedCourseIndex === 'new') {
-      setSlug('');
-      setTitle('');
-      setDescription('');
-      setLessonsCount(0);
-      setHours(1);
+      reset({
+        slug: '',
+        title: '',
+        description: '',
+        lessons: 0,
+        hours: 1,
+      });
     } else {
       const course = courses[Number(selectedCourseIndex)];
       if (course) {
-        setSlug(course.slug || '');
-        setTitle(course.title || '');
-        setDescription(course.description || '');
-        setLessonsCount(Number(course.lessons) || 0);
-        setHours(Number(course.hours) || 1);
+        reset({
+          slug: course.slug || '',
+          title: course.title || '',
+          description: course.description || '',
+          lessons: Number(course.lessons) || 0,
+          hours: Number(course.hours) || 1,
+        });
       }
     }
-  }, [selectedCourseIndex, courses]);
+  }, [selectedCourseIndex, courses, reset]);
 
-  const handleTitleChange = (val: string) => {
-    setTitle(val);
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setValue('title', val, { shouldValidate: true });
     if (selectedCourseIndex === 'new') {
-      setSlug(slugify(val));
+      setValue('slug', slugify(val), { shouldValidate: true });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFeedback(null);
-
-    const validation = upsertCourseSchema.safeParse({
-      slug,
-      title,
-      description,
-      lessons: lessonsCount,
-      hours,
-    });
-
-    if (!validation.success) {
-      setFeedback({ type: 'fail', text: validation.error.issues[0]?.message || 'Preencha os campos corretamente' });
-      return;
-    }
-
-    setLoading(true);
-
+  const onSubmit = async (data: UpsertCourseInput) => {
     try {
-      await lmsService.upsertCourse(validation.data);
-      setFeedback({ type: 'ok', text: 'Curso salvo com sucesso!' });
+      await lmsService.upsertCourse(data);
+      toast.success(
+        selectedCourseIndex === 'new'
+          ? 'Curso cadastrado com sucesso!'
+          : 'Curso atualizado com sucesso!'
+      );
       await fetchCourses();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro ao salvar curso';
-      setFeedback({ type: 'fail', text: msg });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setFeedback(null), 4000);
+      toast.error(msg);
     }
   };
 
@@ -93,24 +94,16 @@ export default function AdminCoursesPage() {
 
           <button
             type="button"
-            onClick={() => setSelectedCourseIndex('new')}
+            onClick={() => {
+              setSelectedCourseIndex('new');
+              toast.info('Modo de criação de novo curso ativado');
+            }}
             className={`btn btn-sm ${selectedCourseIndex === 'new' ? 'btn-primary' : ''}`}
           >
             <PlusCircle size={16} />
             <span>Novo Curso</span>
           </button>
         </div>
-
-        {feedback && (
-          <div
-            className={`${styles.feedbackMessage} ${
-              feedback.type === 'ok' ? styles.feedbackSuccess : styles.feedbackError
-            }`}
-          >
-            {feedback.type === 'ok' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-            <span>{feedback.text}</span>
-          </div>
-        )}
 
         <div className={styles.selectHighlightCard}>
           <div className={styles.formGroup} style={{ marginBottom: 0 }}>
@@ -136,7 +129,7 @@ export default function AdminCoursesPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label className={styles.formLabel} htmlFor="course-slug">
@@ -145,12 +138,11 @@ export default function AdminCoursesPage() {
               <input
                 id="course-slug"
                 type="text"
-                className={styles.formInput}
+                className={`${styles.formInput} ${errors.slug ? styles.inputError : ''}`}
                 placeholder="ex: react-do-zero"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                required
+                {...register('slug')}
               />
+              {errors.slug && <span className={styles.formErrorMsg}>{errors.slug.message}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -160,12 +152,13 @@ export default function AdminCoursesPage() {
               <input
                 id="course-title"
                 type="text"
-                className={styles.formInput}
+                className={`${styles.formInput} ${errors.title ? styles.inputError : ''}`}
                 placeholder="ex: Curso de React Avançado"
-                value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                required
+                {...register('title', {
+                  onChange: handleTitleChange,
+                })}
               />
+              {errors.title && <span className={styles.formErrorMsg}>{errors.title.message}</span>}
             </div>
           </div>
 
@@ -175,12 +168,12 @@ export default function AdminCoursesPage() {
             </label>
             <textarea
               id="course-desc"
-              className={styles.formTextarea}
+              className={`${styles.formTextarea} ${errors.description ? styles.inputError : ''}`}
               placeholder="Descreva o conteúdo, objetivos e metodologia do curso..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              {...register('description')}
               rows={3}
             />
+            {errors.description && <span className={styles.formErrorMsg}>{errors.description.message}</span>}
           </div>
 
           <div className={styles.formRow}>
@@ -192,10 +185,10 @@ export default function AdminCoursesPage() {
                 id="course-lessons"
                 type="number"
                 min="0"
-                className={styles.formInput}
-                value={lessonsCount}
-                onChange={(e) => setLessonsCount(Number(e.target.value))}
+                className={`${styles.formInput} ${errors.lessons ? styles.inputError : ''}`}
+                {...register('lessons', { valueAsNumber: true })}
               />
+              {errors.lessons && <span className={styles.formErrorMsg}>{errors.lessons.message}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -206,18 +199,17 @@ export default function AdminCoursesPage() {
                 id="course-hours"
                 type="number"
                 min="1"
-                className={styles.formInput}
-                value={hours}
-                onChange={(e) => setHours(Number(e.target.value))}
-                required
+                className={`${styles.formInput} ${errors.hours ? styles.inputError : ''}`}
+                {...register('hours', { valueAsNumber: true })}
               />
+              {errors.hours && <span className={styles.formErrorMsg}>{errors.hours.message}</span>}
             </div>
           </div>
 
           <div className={styles.formActions}>
-            <button type="submit" disabled={loading} className="btn btn-primary btn-lg">
+            <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-lg">
               <Save size={18} />
-              <span>{loading ? 'Salvando Curso...' : selectedCourseIndex === 'new' ? 'Cadastrar Curso' : 'Salvar Alterações'}</span>
+              <span>{isSubmitting ? 'Salvando Curso...' : selectedCourseIndex === 'new' ? 'Cadastrar Curso' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>
@@ -225,4 +217,3 @@ export default function AdminCoursesPage() {
     </div>
   );
 }
-
