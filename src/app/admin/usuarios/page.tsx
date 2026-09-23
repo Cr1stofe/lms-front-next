@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
       <div className={styles.adminCard}>
         <div className={styles.headerRow}>
           <div className={styles.titleWrapper}>
-            <span className={`badge badge-indigo ${styles.badge}`}>
+            <span className={styles.badgeIndigo}>
               Painel Administrativo
             </span>
             <h1>Usuários</h1>
@@ -58,7 +58,7 @@ export default function AdminUsersPage() {
           </div>
           <input
             type="text"
-            className={`form-input ${styles.searchInput}`}
+            className={styles.searchInput}
             placeholder="Buscar por nome ou e-mail..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -95,7 +95,7 @@ export default function AdminUsersPage() {
                   </div>
 
                   {user.role && (
-                    <span className={`badge ${isAdmin ? 'badge-indigo' : 'badge-emerald'}`}>
+                    <span className={isAdmin ? styles.badgeIndigo : styles.badgeEmerald}>
                       {String(user.role).toUpperCase()}
                     </span>
                   )}
