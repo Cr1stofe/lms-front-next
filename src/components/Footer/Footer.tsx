@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.copyright}>
-          <span>© {new Date().getFullYear()} Tiny LMS</span>
+          <span>© {new Date().getFullYear()} Veltro LMS</span>
           <span>•</span>
           <span>Next.js 16</span>
         </div>

@@ -28,7 +28,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Tiny LMS - Plataforma de Cursos Online',
+  title: 'Veltro LMS - Plataforma de Cursos Online',
   description: 'Aprenda desenvolvimento web moderno com cursos práticos e objetivos.',
   icons: {
     icon: '/favicon.svg',

@@ -1,4 +1,4 @@
-# 🎓 Tiny LMS - Frontend Next.js 16 (App Router)
+# 🎓 Veltro LMS - Frontend Next.js 16 (App Router)
 
 Plataforma moderna de cursos online construída com **Next.js 16**, **React 19**, **TypeScript**, **SCSS Modules** e arquitetura **BFF (Backend For Frontend)** com estética escura de alto padrão (*sleek dark luxury*) e foco em experiência do usuário (UX).
 
