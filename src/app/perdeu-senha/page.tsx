@@ -56,17 +56,12 @@ export default function ForgotPasswordPage() {
               <CheckCircle2 size={32} />
             </div>
             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>E-mail Enviado!</h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-              Se o e-mail <strong>{email}</strong> estiver cadastrado, enviamos um link para redefinição.
+            <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
+              Se o e-mail <strong>{email}</strong> estiver cadastrado, enviamos as instruções com o link para redefinição da sua senha. Verifique sua caixa de entrada e spam.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link href="/resetar-senha?token=demo-token-123" className={styles.submitBtn} style={{ margin: 0 }}>
-                Simular link de redefinição recebido
-              </Link>
-              <Link href="/login" className="btn" style={{ width: '100%' }}>
-                Voltar para o Login
-              </Link>
-            </div>
+            <Link href="/login" className={styles.submitBtn} style={{ margin: 0, textDecoration: 'none' }}>
+              Voltar para o Login
+            </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
