@@ -71,7 +71,7 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
             <div className={styles.brandIcon}>
               <BookOpen size={16} color="#ffffff" />
             </div>
-            <span>Tiny LMS</span>
+            <span>Veltro LMS</span>
           </Link>
 
           <div className={styles.desktopNavWrapper}>
