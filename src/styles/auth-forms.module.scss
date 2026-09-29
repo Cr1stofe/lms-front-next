@@ -71,6 +71,25 @@
 
 .formInput {
   @include input-base;
+
+  &.inputError {
+    border-color: rgba(239, 68, 68, 0.6);
+    background: rgba(239, 68, 68, 0.03);
+
+    &:focus {
+      border-color: $accent-rose-light;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+  }
+}
+
+.fieldError {
+  font-size: 0.75rem;
+  color: $accent-rose-light;
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .submitBtn {
