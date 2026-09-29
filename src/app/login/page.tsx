@@ -2,39 +2,39 @@
 
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { loginSchema } from '@/lib/schemas/auth';
+import { loginSchema, LoginInput } from '@/lib/schemas/auth';
 import { LogIn, AlertCircle } from 'lucide-react';
 import styles from '@/styles/auth-forms.module.scss';
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
+  const [serverError, setServerError] = useState('');
   const login = useAuthStore((state) => state.login);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectUrl = searchParams.get('redirect');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-    const validation = loginSchema.safeParse({ email, password });
-    if (!validation.success) {
-      setError(
-        validation.error.issues[0]?.message ||
-          'Preencha todos os campos corretamente',
-      );
-      return;
-    }
-
-    setLoading(true);
+  const onSubmit = async (data: LoginInput) => {
+    setServerError('');
 
     try {
-      const res = await login(validation.data.email, validation.data.password);
+      const res = await login(data.email, data.password);
       if (res.success) {
         let destination = '/cursos';
         if (redirectUrl) {
@@ -43,20 +43,20 @@ function LoginForm() {
           destination = '/admin/cursos';
         }
 
-        window.location.href = destination;
+        router.push(destination);
+        router.refresh();
       } else {
-        setError(res.error || 'Credenciais inválidas');
-        setLoading(false);
+        setServerError(res.error || 'Credenciais inválidas');
       }
     } catch {
-      setError('Falha ao autenticar');
-      setLoading(false);
+      setServerError('Falha ao autenticar');
     }
   };
 
   const handleQuickLogin = (userEmail: string, userPass: string) => {
-    setEmail(userEmail);
-    setPassword(userPass);
+    setValue('email', userEmail, { shouldValidate: true });
+    setValue('password', userPass, { shouldValidate: true });
+    setServerError('');
   };
 
   return (
@@ -69,14 +69,14 @@ function LoginForm() {
           </p>
         </div>
 
-        {error && (
+        {serverError && (
           <div className={styles.errorAlert}>
             <AlertCircle size={16} />
-            <span>{error}</span>
+            <span>{serverError}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="email">
               E-mail
@@ -84,12 +84,16 @@ function LoginForm() {
             <input
               id="email"
               type="email"
-              className={styles.formInput}
+              className={`${styles.formInput} ${errors.email ? styles.inputError : ''}`}
               placeholder="seu.email@exemplo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register('email')}
             />
+            {errors.email && (
+              <span className={styles.fieldError}>
+                <AlertCircle size={12} />
+                {errors.email.message}
+              </span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -113,17 +117,21 @@ function LoginForm() {
             <input
               id="password"
               type="password"
-              className={styles.formInput}
+              className={`${styles.formInput} ${errors.password ? styles.inputError : ''}`}
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              {...register('password')}
             />
+            {errors.password && (
+              <span className={styles.fieldError}>
+                <AlertCircle size={12} />
+                {errors.password.message}
+              </span>
+            )}
           </div>
 
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
+          <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
             <LogIn size={18} />
-            <span>{loading ? 'Entrando...' : 'Entrar na Plataforma'}</span>
+            <span>{isSubmitting ? 'Entrando...' : 'Entrar na Plataforma'}</span>
           </button>
         </form>
 

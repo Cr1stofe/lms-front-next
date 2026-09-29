@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { resetPasswordSchema } from '@/lib/schemas/auth';
+import { resetPasswordSchema, ResetPasswordInput } from '@/lib/schemas/auth';
 import { KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
 import styles from '@/styles/auth-forms.module.scss';
 
@@ -12,33 +14,38 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') || '';
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const resetPassword = useAuthStore((state) => state.resetPassword);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordInput>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      token: token || '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-    const validation = resetPasswordSchema.safeParse({ token, password, confirmPassword });
-    if (!validation.success) {
-      setError(validation.error.issues[0]?.message || 'Preencha os campos corretamente');
-      return;
+  useEffect(() => {
+    if (token) {
+      setValue('token', token);
     }
+  }, [token, setValue]);
 
-    setLoading(true);
+  const onSubmit = async (data: ResetPasswordInput) => {
+    setServerError('');
 
     try {
-      await resetPassword(validation.data.token, validation.data.password);
+      await resetPassword(data.token, data.password);
       setSuccess(true);
     } catch {
-      setError('Falha ao redefinir a senha');
-    } finally {
-      setLoading(false);
+      setServerError('Falha ao redefinir a senha');
     }
   };
 
@@ -76,11 +83,11 @@ function ResetPasswordForm() {
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            {error && (
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {serverError && (
               <div className={styles.errorAlert}>
                 <AlertCircle size={16} />
-                <span>{error}</span>
+                <span>{serverError}</span>
               </div>
             )}
 
@@ -91,6 +98,14 @@ function ResetPasswordForm() {
               </div>
             )}
 
+            <input type="hidden" {...register('token')} />
+            {errors.token && (
+              <div className={styles.errorAlert}>
+                <AlertCircle size={16} />
+                <span>{errors.token.message}</span>
+              </div>
+            )}
+
             <div className={styles.formGroup}>
               <label className={styles.formLabel} htmlFor="password">
                 Nova Senha (Mínimo 6 caracteres)
@@ -98,12 +113,16 @@ function ResetPasswordForm() {
               <input
                 id="password"
                 type="password"
-                className={styles.formInput}
+                className={`${styles.formInput} ${errors.password ? styles.inputError : ''}`}
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                {...register('password')}
               />
+              {errors.password && (
+                <span className={styles.fieldError}>
+                  <AlertCircle size={12} />
+                  {errors.password.message}
+                </span>
+              )}
             </div>
 
             <div className={styles.formGroup}>
@@ -113,21 +132,25 @@ function ResetPasswordForm() {
               <input
                 id="confirm-password"
                 type="password"
-                className={styles.formInput}
+                className={`${styles.formInput} ${errors.confirmPassword ? styles.inputError : ''}`}
                 placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
+                {...register('confirmPassword')}
               />
+              {errors.confirmPassword && (
+                <span className={styles.fieldError}>
+                  <AlertCircle size={12} />
+                  {errors.confirmPassword.message}
+                </span>
+              )}
             </div>
 
             <button
               type="submit"
               className={styles.submitBtn}
-              disabled={loading || !token}
+              disabled={isSubmitting || !token}
             >
               <KeyRound size={18} />
-              <span>{loading ? 'Salvando...' : 'Salvar Nova Senha'}</span>
+              <span>{isSubmitting ? 'Salvando...' : 'Salvar Nova Senha'}</span>
             </button>
 
             <div className={styles.footerLinks}>

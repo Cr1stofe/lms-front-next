@@ -2,32 +2,37 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { forgotPasswordSchema } from '@/lib/schemas/auth';
+import { forgotPasswordSchema, ForgotPasswordInput } from '@/lib/schemas/auth';
 import { Mail, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import styles from '@/styles/auth-forms.module.scss';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState('');
+  const [serverError, setServerError] = useState('');
   const requestPasswordReset = useAuthStore((state) => state.requestPasswordReset);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
 
-    const validation = forgotPasswordSchema.safeParse({ email });
-    if (!validation.success) {
-      setError(validation.error.issues[0]?.message || 'Informe um e-mail válido');
-      return;
+  const onSubmit = async (data: ForgotPasswordInput) => {
+    setServerError('');
+    try {
+      await requestPasswordReset(data.email);
+      setSubmittedEmail(data.email);
+    } catch {
+      setServerError('Falha ao solicitar recuperação de senha');
     }
-
-    setLoading(true);
-    await requestPasswordReset(validation.data.email);
-    setSubmitted(true);
-    setLoading(false);
   };
 
   return (
@@ -38,7 +43,7 @@ export default function ForgotPasswordPage() {
           <p className={styles.subtitle}>Informe seu e-mail para receber as instruções de recuperação</p>
         </div>
 
-        {submitted ? (
+        {submittedEmail ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
             <div
               style={{
@@ -57,18 +62,18 @@ export default function ForgotPasswordPage() {
             </div>
             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>E-mail Enviado!</h3>
             <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-              Se o e-mail <strong>{email}</strong> estiver cadastrado, enviamos as instruções com o link para redefinição da sua senha. Verifique sua caixa de entrada e spam.
+              Se o e-mail <strong>{submittedEmail}</strong> estiver cadastrado, enviamos as instruções com o link para redefinição da sua senha. Verifique sua caixa de entrada e spam.
             </p>
             <Link href="/login" className={styles.submitBtn} style={{ margin: 0, textDecoration: 'none' }}>
               Voltar para o Login
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            {error && (
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {serverError && (
               <div className={styles.errorAlert}>
                 <AlertCircle size={16} />
-                <span>{error}</span>
+                <span>{serverError}</span>
               </div>
             )}
 
@@ -79,17 +84,21 @@ export default function ForgotPasswordPage() {
               <input
                 id="email-forgot"
                 type="email"
-                className={styles.formInput}
+                className={`${styles.formInput} ${errors.email ? styles.inputError : ''}`}
                 placeholder="seu.email@exemplo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                {...register('email')}
               />
+              {errors.email && (
+                <span className={styles.fieldError}>
+                  <AlertCircle size={12} />
+                  {errors.email.message}
+                </span>
+              )}
             </div>
 
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
+            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
               <Mail size={18} />
-              <span>{loading ? 'Enviando...' : 'Enviar Link de Recuperação'}</span>
+              <span>{isSubmitting ? 'Enviando...' : 'Enviar Link de Recuperação'}</span>
             </button>
 
             <div className={styles.footerLinks}>
