@@ -24,7 +24,6 @@ export default function CertificatesPage() {
 
   return (
     <div className={`animate-fade-in ${styles.container}`}>
-      {/* Header */}
       <div className={styles.headerCard}>
         <div className={styles.headerContent}>
           <div>
@@ -48,7 +47,7 @@ export default function CertificatesPage() {
 
       {loading ? (
         <div className="glass-card text-center" style={{ padding: '3rem' }}>
-          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#818cf8' }} />
+          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563eb' }} />
           <p>Carregando certificados...</p>
         </div>
       ) : certificates.length > 0 ? (

@@ -5,7 +5,7 @@
   border-top: 1px solid $border-subtle;
   padding: 2rem 1.5rem;
   margin-top: auto;
-  background: rgba(9, 9, 11, 0.95);
+  background: #ffffff;
   width: 100%;
 }
 
@@ -18,7 +18,7 @@
   justify-content: space-between;
   gap: 1rem;
   font-size: 0.85rem;
-  color: $text-muted;
+  color: $text-secondary;
 }
 
 .copyright {
@@ -29,7 +29,7 @@
 
 .badge {
   @include badge-base;
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: $accent-emerald-light;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
 }

@@ -5,11 +5,11 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16/9;
-  background: #000000;
+  background: #0f172a;
   border-radius: $radius-lg;
   overflow: hidden;
-  border: 1px solid $border-subtle;
-  box-shadow: $shadow-md;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.08);
   margin: 1.25rem 0;
 }
 
@@ -26,7 +26,9 @@
   @include flex-center;
   flex-direction: column;
   padding: 2rem;
-  background: radial-gradient(circle, #181920 0%, #09090b 100%);
+  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px dashed #cbd5e1;
+  border-radius: $radius-lg;
   text-align: center;
 }
 
@@ -34,19 +36,25 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.2);
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   @include flex-center;
   margin-bottom: 1rem;
-  color: $accent-indigo-light;
+  color: #2563eb;
+  box-shadow: $shadow-sm;
 }
 
 .title {
-  margin-bottom: 0.5rem;
-  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .message {
-  font-size: 0.85rem;
-  color: $text-muted;
-  max-width: 400px;
+  font-size: 0.88rem;
+  color: #64748b;
+  max-width: 420px;
+  line-height: 1.5;
 }

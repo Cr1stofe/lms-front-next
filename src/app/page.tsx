@@ -40,7 +40,6 @@ export default async function HomePage() {
 
   return (
     <div className={`animate-fade-in ${styles.homeContainer}`}>
-      {/* Hero Section */}
       <section className={styles.hero}>
         <div style={{ display: 'inline-flex', marginBottom: '1.25rem' }}>
           {isAdmin ? (
@@ -103,7 +102,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Feature Highlights / Admin Shortcut Modules */}
       <section className={styles.featureGrid}>
         {isAdmin ? (
           <>
@@ -187,7 +185,6 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* Course Catalog Preview */}
       <section>
         <div className={styles.sectionHeader}>
           <div>

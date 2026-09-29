@@ -24,9 +24,9 @@
 
 .badge {
   @include badge-base;
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
-  color: $accent-indigo-light;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
   margin-bottom: 0.5rem;
 }
 
@@ -46,7 +46,7 @@
   min-width: 80px;
   text-align: center;
   padding: 0.65rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: #f8fafc;
   border-radius: $radius-md;
   border: 1px solid $border-subtle;
 }
@@ -54,21 +54,21 @@
 .statNumberIndigo {
   font-size: 1.4rem;
   font-weight: 700;
-  color: $accent-indigo-light;
+  color: #2563eb;
   font-family: $font-serif;
 }
 
 .statNumberCyan {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #38bdf8;
+  color: #0284c7;
   font-family: $font-serif;
 }
 
 .statNumberEmerald {
   font-size: 1.4rem;
   font-weight: 700;
-  color: $accent-emerald-light;
+  color: #059669;
   font-family: $font-serif;
 }
 
@@ -94,7 +94,7 @@
 .searchInput {
   @include input-base;
   padding-left: 3rem;
-  background: rgba(9, 9, 11, 0.6);
+  background: #ffffff;
 }
 
 .grid {

@@ -1,19 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { lmsService } from '@/services/lmsService';
+import { useLMSStore } from '@/stores/useLMSStore';
 import { upsertLessonSchema, UpsertLessonInput } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
 import { Lesson } from '@/lib/types';
-import { Save, PlusCircle, UploadCloud } from 'lucide-react';
+import { Save, PlusCircle, UploadCloud, Filter, Layers } from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 
 export default function AdminLessonsPage() {
+  const courses = useLMSStore((state) => state.courses);
+  const fetchCourses = useLMSStore((state) => state.fetchCourses);
+
   const [adminLessons, setAdminLessons] = useState<Lesson[]>([]);
-  const [selectedLessonIndex, setSelectedLessonIndex] = useState<string>('new');
+  const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>('all');
+  const [selectedLessonId, setSelectedLessonId] = useState<string>('new');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -37,34 +42,44 @@ export default function AdminLessonsPage() {
     },
   });
 
-  const loadLessons = async () => {
+  const loadData = useCallback(async () => {
     try {
-      const list = await lmsService.getAdminLessons();
-      setAdminLessons(list);
+      await Promise.all([
+        fetchCourses(),
+        lmsService.getAdminLessons().then(setAdminLessons),
+      ]);
     } catch {
-      toast.error('Não foi possível carregar a lista de aulas.');
+      toast.error('Não foi possível carregar os dados.');
     }
-  };
+  }, [fetchCourses]);
 
   useEffect(() => {
-    loadLessons();
-  }, []);
+    loadData();
+  }, [loadData]);
+
+  const filteredLessons = useMemo(() => {
+    if (selectedCourseFilter === 'all') return adminLessons;
+    return adminLessons.filter((lesson) => {
+      const cSlug = lesson.courseSlug || (lesson as Lesson & { course_slug?: string }).course_slug;
+      return cSlug === selectedCourseFilter;
+    });
+  }, [adminLessons, selectedCourseFilter]);
 
   useEffect(() => {
     setSelectedFile(null);
-    if (selectedLessonIndex === 'new') {
+    if (selectedLessonId === 'new') {
       reset({
-        courseSlug: '',
+        courseSlug: selectedCourseFilter !== 'all' ? selectedCourseFilter : '',
         slug: '',
         title: '',
         description: '',
         seconds: 300,
-        order: 1,
+        order: (filteredLessons.length || 0) + 1,
         free: 0,
         video: '',
       });
     } else {
-      const lesson = adminLessons[Number(selectedLessonIndex)];
+      const lesson = adminLessons.find((l) => String(l.id) === selectedLessonId);
       if (lesson) {
         const rawLesson = lesson as Lesson & { course_slug?: string };
         reset({
@@ -79,12 +94,12 @@ export default function AdminLessonsPage() {
         });
       }
     }
-  }, [selectedLessonIndex, adminLessons, reset]);
+  }, [selectedLessonId, selectedCourseFilter, adminLessons, filteredLessons.length, reset]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setValue('title', val, { shouldValidate: true });
-    if (selectedLessonIndex === 'new') {
+    if (selectedLessonId === 'new') {
       setValue('slug', slugify(val), { shouldValidate: true });
     }
   };
@@ -124,11 +139,15 @@ export default function AdminLessonsPage() {
         video: finalVideo,
       });
       toast.success(
-        selectedLessonIndex === 'new'
+        selectedLessonId === 'new'
           ? 'Aula cadastrada com sucesso!'
           : 'Aula atualizada com sucesso!'
       );
-      await loadLessons();
+      const updatedLessons = await lmsService.getAdminLessons();
+      setAdminLessons(updatedLessons);
+      if (selectedLessonId === 'new') {
+        setSelectedLessonId('new');
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro ao salvar aula';
       toast.error(msg);
@@ -152,10 +171,10 @@ export default function AdminLessonsPage() {
           <button
             type="button"
             onClick={() => {
-              setSelectedLessonIndex('new');
+              setSelectedLessonId('new');
               toast.info('Modo de cadastro de nova aula ativado');
             }}
-            className={`btn btn-sm ${selectedLessonIndex === 'new' ? 'btn-primary' : ''}`}
+            className={`btn btn-sm ${selectedLessonId === 'new' ? 'btn-primary' : ''}`}
           >
             <PlusCircle size={16} />
             <span>Nova Aula</span>
@@ -163,26 +182,111 @@ export default function AdminLessonsPage() {
         </div>
 
         <div className={styles.selectHighlightCard}>
-          <div className={styles.formGroup} style={{ marginBottom: 0 }}>
-            <label className={styles.formLabel} htmlFor="lesson-select">
-              <span>Selecionar Aula para Edição</span>
-              <span className={styles.badgeIndigo}>
-                {selectedLessonIndex === 'new' ? 'Modo Criação' : 'Modo Edição'}
-              </span>
-            </label>
-            <select
-              id="lesson-select"
-              className={styles.formSelect}
-              value={selectedLessonIndex}
-              onChange={(e) => setSelectedLessonIndex(e.target.value)}
-            >
-              <option value="new">+ Cadastrar Nova Aula</option>
-              {adminLessons.map((lesson, idx) => (
-                <option key={lesson.id || idx} value={idx}>
-                  {lesson.courseSlug || (lesson as Lesson & { course_slug?: string }).course_slug} - {lesson.slug}
-                </option>
-              ))}
-            </select>
+          <div className={styles.cardHeaderRow}>
+            <span className={styles.cardHeaderTitle}>
+              <Layers size={15} /> Seleção & Filtragem de Aulas
+            </span>
+            <span className={selectedLessonId === 'new' ? styles.badgeEmerald : styles.badgeIndigo}>
+              {selectedLessonId === 'new' ? 'Modo Criação (Nova Aula)' : 'Modo Edição'}
+            </span>
+          </div>
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup} style={{ marginBottom: 0 }}>
+              <label className={styles.formLabel} htmlFor="filter-course-select">
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Filter size={14} /> Filtrar por Curso
+                </span>
+              </label>
+              <select
+                id="filter-course-select"
+                className={styles.formSelect}
+                value={selectedCourseFilter}
+                onChange={(e) => {
+                  setSelectedCourseFilter(e.target.value);
+                  setSelectedLessonId('new');
+                }}
+              >
+                <option value="all">Todos os Cursos ({adminLessons.length} aulas)</option>
+                {courses.map((course) => (
+                  <option key={course.id} value={course.slug}>
+                    {course.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.formGroup} style={{ marginBottom: 0 }}>
+              <label className={styles.formLabel} htmlFor="lesson-select">
+                <span>Selecionar Aula para Edição</span>
+              </label>
+              <select
+                id="lesson-select"
+                className={styles.formSelect}
+                value={selectedLessonId}
+                onChange={(e) => setSelectedLessonId(e.target.value)}
+              >
+                <option value="new">+ Cadastrar Nova Aula</option>
+                {selectedCourseFilter === 'all' ? (
+                  <>
+                    {courses.map((course) => {
+                      const courseLessons = adminLessons.filter((l) => {
+                        const cSlug =
+                          l.courseSlug ||
+                          (l as Lesson & { course_slug?: string }).course_slug;
+                        return cSlug === course.slug;
+                      });
+
+                      if (courseLessons.length === 0) return null;
+
+                      return (
+                        <optgroup key={course.id} label={course.title}>
+                          {courseLessons.map((lesson) => (
+                            <option key={lesson.id} value={String(lesson.id)}>
+                              Aula {lesson.order}: {lesson.title}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                    {adminLessons.filter(
+                      (l) =>
+                        !courses.some(
+                          (c) =>
+                            c.slug ===
+                            (l.courseSlug ||
+                              (l as Lesson & { course_slug?: string }).course_slug)
+                        )
+                    ).length > 0 && (
+                      <optgroup label="Outros / Sem Curso">
+                        {adminLessons
+                          .filter(
+                            (l) =>
+                              !courses.some(
+                                (c) =>
+                                  c.slug ===
+                                  (l.courseSlug ||
+                                    (l as Lesson & { course_slug?: string })
+                                      .course_slug)
+                              )
+                          )
+                          .map((lesson) => (
+                            <option key={lesson.id} value={String(lesson.id)}>
+                              Aula {lesson.order}: {lesson.title}
+                            </option>
+                          ))}
+                      </optgroup>
+                    )}
+                  </>
+                ) : (
+                  filteredLessons.map((lesson) => (
+                    <option key={lesson.id} value={String(lesson.id)}>
+                      Aula {lesson.order}: {lesson.title}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -190,15 +294,20 @@ export default function AdminLessonsPage() {
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label className={styles.formLabel} htmlFor="lesson-course">
-                Curso Pai (Course Slug)
+                Curso Pai
               </label>
-              <input
+              <select
                 id="lesson-course"
-                type="text"
-                className={`${styles.formInput} ${errors.courseSlug ? styles.inputError : ''}`}
-                placeholder="slug-do-curso"
+                className={`${styles.formSelect} ${errors.courseSlug ? styles.inputError : ''}`}
                 {...register('courseSlug')}
-              />
+              >
+                <option value="">Selecione o curso pai...</option>
+                {courses.map((course) => (
+                  <option key={course.id} value={course.slug}>
+                    {course.title}
+                  </option>
+                ))}
+              </select>
               {errors.courseSlug && <span className={styles.formErrorMsg}>{errors.courseSlug.message}</span>}
             </div>
 
@@ -328,7 +437,7 @@ export default function AdminLessonsPage() {
           <div className={styles.formActions}>
             <button type="submit" disabled={isBusy} className="btn btn-primary btn-lg">
               <Save size={18} />
-              <span>{isBusy ? 'Salvando...' : 'Criar/Atualizar Aula'}</span>
+              <span>{isBusy ? 'Salvando...' : selectedLessonId === 'new' ? 'Cadastrar Aula' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>

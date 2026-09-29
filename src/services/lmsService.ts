@@ -5,8 +5,8 @@ export interface UpsertCourseDTO {
   slug: string;
   title: string;
   description: string;
-  lessons: number;
   hours: number;
+  lessons?: number;
 }
 
 export interface UpsertLessonDTO {

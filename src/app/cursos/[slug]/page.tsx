@@ -1,12 +1,14 @@
 'use client';
 
 import React, { use, useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { lmsService } from '@/services/lmsService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { secToMin } from '@/lib/utils';
 import ProgressBar from '@/components/ProgressBar';
 import { Course, Lesson, CompletedLesson } from '@/lib/types';
+import { toast } from 'sonner';
 import {
   BookOpen,
   Clock,
@@ -20,6 +22,7 @@ import {
   Lock,
   LogIn,
   UserPlus,
+  AlertTriangle,
 } from 'lucide-react';
 import styles from './course-detail.module.scss';
 import { API_BASE } from '@/lib/api-client';
@@ -38,6 +41,13 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
   const [completed, setCompleted] = useState<CompletedLesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [certificateId, setCertificateId] = useState<string>('');
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const loadCourseData = useCallback(async () => {
     setLoading(true);
@@ -64,7 +74,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
         <Loader2
           size={32}
           className="animate-spin"
-          style={{ margin: '0 auto 1rem', color: '#818cf8' }}
+          style={{ margin: '0 auto 1rem', color: '#2563eb' }}
         />
         <p>Carregando curso...</p>
       </div>
@@ -104,25 +114,34 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
     (l) => Boolean(l.free) && l.free !== 0,
   );
 
-  const handleReset = async () => {
-    if (confirm('Tem certeza que deseja reiniciar o progresso deste curso?')) {
+  const handleResetConfirm = async () => {
+    if (!course) return;
+    try {
+      setIsResetting(true);
       const ok = await lmsService.resetCourseProgress(course.id);
       if (ok) {
+        toast.success('Progresso do curso reiniciado com sucesso!');
+        setShowResetModal(false);
         await loadCourseData();
+      } else {
+        toast.error('Não foi possível reiniciar o progresso.');
       }
+    } catch {
+      toast.error('Erro ao reiniciar o progresso.');
+    } finally {
+      setIsResetting(false);
     }
   };
 
   return (
-    <div className={`animate-fade-in ${styles.container}`}>
-      {/* Breadcrumbs */}
+    <>
+      <div className={`animate-fade-in ${styles.container}`}>
       <nav className={styles.breadcrumb}>
         <Link href="/cursos">Cursos</Link>
         <ChevronRight size={14} />
         <span className={styles.current}>{course.title}</span>
       </nav>
 
-      {/* Course Hero Card */}
       <div className={styles.heroCard}>
         <div className={styles.badgesRow}>
           <span className={styles.badgeIndigo}>
@@ -149,7 +168,11 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 {completedCount} de {lessons.length} aulas completadas
               </span>
               {completedCount > 0 && (
-                <button onClick={handleReset} className={styles.resetBtn}>
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(true)}
+                  className={styles.resetBtn}
+                >
                   <RotateCcw size={12} /> Reiniciar Progresso
                 </button>
               )}
@@ -240,7 +263,6 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
         </div>
       </div>
 
-      {/* Curriculum / Lessons List */}
       <div>
         <div className={styles.curriculumHeader}>
           <h2>Grade Curricular</h2>
@@ -294,7 +316,6 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
               );
             }
 
-            // Non-free lesson for unauthenticated user (Locked)
             return (
               <div
                 key={lesson.id}
@@ -328,7 +349,54 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
           })}
         </div>
       </div>
-    </div>
+      </div>
+
+      {mounted && showResetModal && createPortal(
+        <div
+          className={styles.modalOverlay}
+          onClick={() => !isResetting && setShowResetModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reset-modal-title"
+        >
+          <div
+            className={styles.modalCard}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper}>
+              <AlertTriangle size={28} />
+            </div>
+
+            <h3 id="reset-modal-title" className={styles.modalTitle}>
+              Reiniciar progresso?
+            </h3>
+            <p className={styles.modalDescription}>
+              Você está prestes a resetar o progresso de todas as aulas concluídas deste curso. Essa ação não poderá ser desfeita.
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                className={styles.modalCancelBtn}
+                onClick={() => setShowResetModal(false)}
+                disabled={isResetting}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={styles.modalConfirmBtn}
+                onClick={handleResetConfirm}
+                disabled={isResetting}
+              >
+                {isResetting ? 'Reiniciando...' : 'Sim, Reiniciar Progresso'}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
 

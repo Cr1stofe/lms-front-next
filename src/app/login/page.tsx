@@ -63,9 +63,14 @@ function LoginForm() {
     <div className={`animate-fade-in ${styles.container}`}>
       <div className={styles.card}>
         <div className={styles.header}>
+          <div className={styles.badge}>
+            <span className={styles.glowingDot} />
+            <span>Veltro LMS</span>
+          </div>
+
           <h1 className={styles.title}>Entrar na Conta</h1>
           <p className={styles.subtitle}>
-            Acesse suas aulas, cursos e certificados
+            Acesse seus cursos, aulas e certificados na plataforma
           </p>
         </div>
 
@@ -109,7 +114,7 @@ function LoginForm() {
               </label>
               <Link
                 href="/perdeu-senha"
-                style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}
+                style={{ fontSize: '0.78rem', color: '#64748b' }}
               >
                 Esqueceu a senha?
               </Link>
@@ -131,11 +136,10 @@ function LoginForm() {
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
             <LogIn size={18} />
-            <span>{isSubmitting ? 'Entrando...' : 'Entrar na Plataforma'}</span>
+            <span>{isSubmitting ? 'Autenticando...' : 'Entrar na Plataforma'}</span>
           </button>
         </form>
 
-        {/* Quick Demo Logins */}
         <div className={styles.quickLoginArea}>
           <div className={styles.quickLoginLabel}>
             Acessos Rápidos de Demonstração
@@ -146,14 +150,21 @@ function LoginForm() {
               className={styles.quickLoginBtn}
               onClick={() => handleQuickLogin('aluno@lms.com', 'P@ssw0rd123')}
             >
-              Preencher como Aluno
+              Aluno
+            </button>
+            <button
+              type="button"
+              className={styles.quickLoginBtn}
+              onClick={() => handleQuickLogin('editor@lms.com', 'P@ssw0rd123')}
+            >
+              Editor
             </button>
             <button
               type="button"
               className={styles.quickLoginBtn}
               onClick={() => handleQuickLogin('admin@lms.com', 'P@ssw0rd123')}
             >
-              Preencher como Admin
+              Admin
             </button>
           </div>
         </div>

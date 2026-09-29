@@ -8,7 +8,6 @@ export function formatDate(isoDateString: string): string {
   if (!isoDateString) return '';
   const date = new Date(isoDateString);
   if (isNaN(date.getTime())) {
-    // fallback if already string YYYY-MM-DD
     return isoDateString.slice(0, 10).split('-').reverse().join('/');
   }
   return date.toLocaleDateString('pt-BR', {

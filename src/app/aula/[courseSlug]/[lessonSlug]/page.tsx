@@ -58,7 +58,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
         <Loader2
           size={32}
           className="animate-spin"
-          style={{ margin: '0 auto 1rem', color: '#818cf8' }}
+          style={{ margin: '0 auto 1rem', color: '#2563eb' }}
         />
         <p>Carregando aula...</p>
       </div>
@@ -98,11 +98,9 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
   const videoUrl = resolveVideoUrl(lesson.video);
 
-  // If user is not authenticated and lesson is NOT free -> Render locked barrier card
   if (!hasAccess) {
     return (
       <div className={`animate-fade-in ${styles.container}`}>
-        {/* Breadcrumb Navigation */}
         <nav className={styles.breadcrumb}>
           <Link href="/cursos">Cursos</Link>
           <ChevronRight size={14} />
@@ -111,7 +109,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           <span className={styles.current}>{lesson.title}</span>
         </nav>
 
-        {/* Lesson Header */}
         <div className={styles.headerRow}>
           <div>
             <span className={styles.badgeIndigo}>
@@ -125,7 +122,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           </span>
         </div>
 
-        {/* Locked Access Barrier */}
         <div className={styles.lockBarrierCard}>
           <div className={styles.lockIconWrapper}>
             <Lock size={34} />
@@ -159,7 +155,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           </div>
         </div>
 
-        {/* Lesson Description */}
         {lesson.description && (
           <div className={styles.aboutCard}>
             <h3 className={styles.aboutTitle}>Sobre esta aula</h3>
@@ -172,7 +167,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
 
   return (
     <div className={`animate-fade-in ${styles.container}`}>
-      {/* Breadcrumb Navigation */}
       <nav className={styles.breadcrumb}>
         <Link href="/cursos">Cursos</Link>
         <ChevronRight size={14} />
@@ -181,7 +175,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
         <span className={styles.current}>{lesson.title}</span>
       </nav>
 
-      {/* Lesson Header */}
       <div className={styles.headerRow}>
         <div>
           <span className={styles.badgeIndigo}>
@@ -204,10 +197,8 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
         </div>
       </div>
 
-      {/* Video Player */}
       <VideoPlayer src={videoUrl} title={lesson.title} />
 
-      {/* Navigation & Completion Bar */}
       <div className={styles.controlsCard}>
         <div
           style={{
@@ -283,7 +274,6 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
         </div>
       </div>
 
-      {/* Lesson Description */}
       {lesson.description && (
         <div className={styles.aboutCard}>
           <h3 className={styles.aboutTitle}>Sobre esta aula</h3>
