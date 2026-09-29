@@ -23,7 +23,6 @@ export default function CoursesPage() {
 
   return (
     <div className={`animate-fade-in ${styles.pageContainer}`}>
-      {/* Header & Stats */}
       <div className={styles.headerCard}>
         <div className={styles.headerContent}>
           <div className={styles.titleArea}>
@@ -54,7 +53,6 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        {/* Search bar */}
         <div className={styles.searchWrapper}>
           <div className={styles.searchIcon}>
             <Search size={18} />
@@ -69,7 +67,6 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {/* Grid of courses */}
       {filtered.length > 0 ? (
         <div className={styles.grid}>
           {filtered.map((course) => (

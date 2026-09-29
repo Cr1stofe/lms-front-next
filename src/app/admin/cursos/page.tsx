@@ -8,7 +8,7 @@ import { useLMSStore } from '@/stores/useLMSStore';
 import { lmsService } from '@/services/lmsService';
 import { upsertCourseSchema, UpsertCourseInput } from '@/lib/schemas/lms';
 import { slugify } from '@/lib/utils';
-import { PlusCircle, Save } from 'lucide-react';
+import { PlusCircle, Save, BookOpen } from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 
 export default function AdminCoursesPage() {
@@ -29,7 +29,6 @@ export default function AdminCoursesPage() {
       slug: '',
       title: '',
       description: '',
-      lessons: 0,
       hours: 1,
     },
   });
@@ -40,7 +39,6 @@ export default function AdminCoursesPage() {
         slug: '',
         title: '',
         description: '',
-        lessons: 0,
         hours: 1,
       });
     } else {
@@ -50,7 +48,6 @@ export default function AdminCoursesPage() {
           slug: course.slug || '',
           title: course.title || '',
           description: course.description || '',
-          lessons: Number(course.lessons) || 0,
           hours: Number(course.hours) || 1,
         });
       }
@@ -106,12 +103,18 @@ export default function AdminCoursesPage() {
         </div>
 
         <div className={styles.selectHighlightCard}>
+          <div className={styles.cardHeaderRow}>
+            <span className={styles.cardHeaderTitle}>
+              <BookOpen size={15} /> Seleção de Curso
+            </span>
+            <span className={selectedCourseIndex === 'new' ? styles.badgeEmerald : styles.badgeIndigo}>
+              {selectedCourseIndex === 'new' ? 'Modo Criação (Novo Curso)' : 'Modo Edição'}
+            </span>
+          </div>
+
           <div className={styles.formGroup} style={{ marginBottom: 0 }}>
             <label className={styles.formLabel} htmlFor="course-select">
               <span>Selecionar Curso para Edição</span>
-              <span className={styles.badgeIndigo}>
-                {selectedCourseIndex === 'new' ? 'Modo Criação' : 'Modo Edição'}
-              </span>
             </label>
             <select
               id="course-select"
@@ -122,7 +125,7 @@ export default function AdminCoursesPage() {
               <option value="new">+ Criar Novo Curso</option>
               {courses.map((course, idx) => (
                 <option key={course.id} value={idx}>
-                  {course.slug} - {course.title}
+                  {course.title}
                 </option>
               ))}
             </select>
@@ -176,34 +179,18 @@ export default function AdminCoursesPage() {
             {errors.description && <span className={styles.formErrorMsg}>{errors.description.message}</span>}
           </div>
 
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="course-lessons">
-                Quantidade de Aulas
-              </label>
-              <input
-                id="course-lessons"
-                type="number"
-                min="0"
-                className={`${styles.formInput} ${errors.lessons ? styles.inputError : ''}`}
-                {...register('lessons', { valueAsNumber: true })}
-              />
-              {errors.lessons && <span className={styles.formErrorMsg}>{errors.lessons.message}</span>}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="course-hours">
-                Carga Horária (Horas)
-              </label>
-              <input
-                id="course-hours"
-                type="number"
-                min="1"
-                className={`${styles.formInput} ${errors.hours ? styles.inputError : ''}`}
-                {...register('hours', { valueAsNumber: true })}
-              />
-              {errors.hours && <span className={styles.formErrorMsg}>{errors.hours.message}</span>}
-            </div>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="course-hours">
+              Carga Horária (Horas)
+            </label>
+            <input
+              id="course-hours"
+              type="number"
+              min="1"
+              className={`${styles.formInput} ${errors.hours ? styles.inputError : ''}`}
+              {...register('hours', { valueAsNumber: true })}
+            />
+            {errors.hours && <span className={styles.formErrorMsg}>{errors.hours.message}</span>}
           </div>
 
           <div className={styles.formActions}>

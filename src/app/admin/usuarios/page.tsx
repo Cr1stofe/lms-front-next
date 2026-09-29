@@ -3,25 +3,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { lmsService } from '@/services/lmsService';
 import { User } from '@/lib/types';
-import { Search, Shield, User as UserIcon, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { useDebounce } from '@/hooks/useDebounce';
+import {
+  Search,
+  Shield,
+  User as UserIcon,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 
 export default function AdminUsersPage() {
   const [query, setQuery] = useState('');
+  const debouncedQuery = useDebounce(query, 600);
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery]);
+
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    const result = await lmsService.searchUsers(query, page);
-    setUsers(result.users);
-    setTotal(result.total);
-    setTotalPages(result.totalPages);
-    setLoading(false);
-  }, [query, page]);
+    try {
+      const result = await lmsService.searchUsers(debouncedQuery, page);
+      setUsers(result.users || []);
+      setTotal(result.total || 0);
+      setTotalPages(result.totalPages || 1);
+    } catch {
+      setUsers([]);
+      setTotal(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedQuery, page]);
 
   useEffect(() => {
     fetchUsers();
@@ -29,8 +49,6 @@ export default function AdminUsersPage() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
-    fetchUsers();
   };
 
   return (
@@ -38,9 +56,7 @@ export default function AdminUsersPage() {
       <div className={styles.adminCard}>
         <div className={styles.headerRow}>
           <div className={styles.titleWrapper}>
-            <span className={styles.badgeIndigo}>
-              Painel Administrativo
-            </span>
+            <span className={styles.badgeIndigo}>Painel Administrativo</span>
             <h1>Usuários</h1>
             <p>Busca e listagem de usuários cadastrados no sistema.</p>
           </div>
@@ -72,7 +88,9 @@ export default function AdminUsersPage() {
         ) : (
           <div className={styles.userList}>
             {users.map((user, idx) => {
-              const isAdmin = String(user.role).toLowerCase() === 'admin' || String(user.role).toLowerCase() === 'editor';
+              const isAdmin =
+                String(user.role).toLowerCase() === 'admin' ||
+                String(user.role).toLowerCase() === 'editor';
 
               return (
                 <div
@@ -93,7 +111,11 @@ export default function AdminUsersPage() {
                   </div>
 
                   {user.role && (
-                    <span className={isAdmin ? styles.badgeIndigo : styles.badgeEmerald}>
+                    <span
+                      className={
+                        isAdmin ? styles.badgeIndigo : styles.badgeEmerald
+                      }
+                    >
                       {String(user.role).toUpperCase()}
                     </span>
                   )}
@@ -145,4 +167,3 @@ export default function AdminUsersPage() {
     </div>
   );
 }
-

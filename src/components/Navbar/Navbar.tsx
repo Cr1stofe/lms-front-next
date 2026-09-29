@@ -178,8 +178,8 @@ export default function Navbar({ initialRole = 'public' }: NavbarProps) {
                   {isAdmin ? <Shield size={18} /> : <UserIcon size={18} />}
                 </div>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.95rem', color: '#ffffff' }}>{user.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#71717a' }}>{user.email}</div>
+                  <div className={styles.userName}>{user.name}</div>
+                  <div className={styles.userEmail}>{user.email}</div>
                 </div>
               </div>
             )}

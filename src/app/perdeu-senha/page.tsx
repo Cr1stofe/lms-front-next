@@ -12,7 +12,9 @@ import styles from '@/styles/auth-forms.module.scss';
 export default function ForgotPasswordPage() {
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [serverError, setServerError] = useState('');
-  const requestPasswordReset = useAuthStore((state) => state.requestPasswordReset);
+  const requestPasswordReset = useAuthStore(
+    (state) => state.requestPasswordReset,
+  );
 
   const {
     register,
@@ -40,7 +42,9 @@ export default function ForgotPasswordPage() {
       <div className={styles.card}>
         <div className={styles.header}>
           <h1 className={styles.title}>Recuperar Senha</h1>
-          <p className={styles.subtitle}>Informe seu e-mail para receber as instruções de recuperação</p>
+          <p className={styles.subtitle}>
+            Informe seu e-mail para receber as instruções de recuperação
+          </p>
         </div>
 
         {submittedEmail ? (
@@ -60,11 +64,25 @@ export default function ForgotPasswordPage() {
             >
               <CheckCircle2 size={32} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>E-mail Enviado!</h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-              Se o e-mail <strong>{submittedEmail}</strong> estiver cadastrado, enviamos as instruções com o link para redefinição da sua senha. Verifique sua caixa de entrada e spam.
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>
+              E-mail Enviado!
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                marginBottom: '1.5rem',
+                color: 'var(--color-text-muted)',
+              }}
+            >
+              Se o e-mail <strong>{submittedEmail}</strong> estiver cadastrado,
+              enviamos as instruções com o link para redefinição da sua senha.
+              Verifique sua caixa de entrada e spam.
             </p>
-            <Link href="/login" className={styles.submitBtn} style={{ margin: 0, textDecoration: 'none' }}>
+            <Link
+              href="/login"
+              className={styles.submitBtn}
+              style={{ margin: 0, textDecoration: 'none' }}
+            >
               Voltar para o Login
             </Link>
           </div>
@@ -96,13 +114,22 @@ export default function ForgotPasswordPage() {
               )}
             </div>
 
-            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={isSubmitting}
+            >
               <Mail size={18} />
-              <span>{isSubmitting ? 'Enviando...' : 'Enviar Link de Recuperação'}</span>
+              <span>
+                {isSubmitting ? 'Enviando...' : 'Enviar Link de Recuperação'}
+              </span>
             </button>
 
             <div className={styles.footerLinks}>
-              <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Link
+                href="/login"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              >
                 <ArrowLeft size={14} /> Voltar para o Login
               </Link>
             </div>

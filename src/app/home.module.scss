@@ -15,9 +15,9 @@
 
 .heroBadge {
   @include badge-base;
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
-  color: $accent-indigo-light;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
   padding: 0.4rem 0.9rem;
   font-size: 0.8rem;
   margin-bottom: 1.25rem;
@@ -89,7 +89,16 @@
   flex-direction: column;
   justify-content: space-between;
   text-decoration: none;
-  color: inherit;
+  color: $text-primary;
+
+  h3 {
+    color: $text-primary;
+    transition: color $transition-fast;
+  }
+
+  p {
+    color: $text-secondary;
+  }
 
   .cardActionLink {
     display: inline-flex;
@@ -97,14 +106,20 @@
     gap: 6px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: $accent-indigo-light;
+    color: $accent-primary;
     margin-top: 1.25rem;
     transition: gap $transition-fast, color $transition-fast;
   }
 
-  &:hover .cardActionLink {
-    gap: 10px;
-    color: #ffffff;
+  &:hover {
+    h3 {
+      color: $accent-primary;
+    }
+
+    .cardActionLink {
+      gap: 10px;
+      color: #1d4ed8;
+    }
   }
 }
 
@@ -112,8 +127,9 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(99, 102, 241, 0.15);
-  color: $accent-indigo-light;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
   @include flex-center;
   margin-bottom: 1rem;
 }
@@ -122,8 +138,9 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(16, 185, 129, 0.15);
-  color: $accent-emerald-light;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
   @include flex-center;
   margin-bottom: 1rem;
 }
@@ -132,8 +149,9 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
   @include flex-center;
   margin-bottom: 1rem;
 }
@@ -148,9 +166,9 @@
 
 .sectionBadge {
   @include badge-base;
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
-  color: $accent-indigo-light;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
   margin-bottom: 0.4rem;
 }
 

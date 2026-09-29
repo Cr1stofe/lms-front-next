@@ -8,10 +8,6 @@ export const upsertCourseSchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'O slug deve conter apenas letras minúsculas, números e hífens'),
   title: z.string().trim().min(3, 'O título do curso deve ter no mínimo 3 caracteres'),
   description: z.string().trim().min(5, 'A descrição deve ter no mínimo 5 caracteres'),
-  lessons: z
-    .number()
-    .int('A quantidade de aulas deve ser um número inteiro')
-    .min(0, 'A quantidade de aulas não pode ser negativa'),
   hours: z
     .number()
     .int('A carga horária deve ser um número inteiro')

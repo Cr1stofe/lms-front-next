@@ -7,16 +7,20 @@
   flex-direction: column;
   height: 100%;
   text-decoration: none;
-  color: inherit;
+  color: $text-primary;
 
   &:hover {
     .title {
-      color: #ffffff;
+      color: $accent-primary !important;
+    }
+
+    .description {
+      color: $text-secondary !important;
     }
 
     .accessBtn {
       box-shadow: $shadow-btn-hover;
-      filter: brightness(1.12);
+      filter: brightness(1.05);
       transform: translateY(-1px);
     }
 
@@ -34,9 +38,9 @@
 
 .badgeIndigo {
   @include badge-base;
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
-  color: $accent-indigo-light;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
 }
 
 .badgeDefault {
@@ -46,6 +50,7 @@
 .title {
   margin-bottom: 0.75rem;
   font-size: 1.35rem;
+  color: $text-primary;
   transition: color 0.25s ease;
 }
 
