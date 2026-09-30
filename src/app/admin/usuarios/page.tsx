@@ -104,9 +104,13 @@ export default function AdminUsersPage() {
                       {isAdmin ? <Shield size={20} /> : <UserIcon size={20} />}
                     </div>
 
-                    <div>
-                      <div className={styles.userName}>{user.name}</div>
-                      <div className={styles.userEmail}>{user.email}</div>
+                    <div className={styles.userDetails}>
+                      <div className={styles.userName} title={user.name}>
+                        {user.name}
+                      </div>
+                      <div className={styles.userEmail} title={user.email}>
+                        {user.email}
+                      </div>
                     </div>
                   </div>
 
@@ -134,29 +138,65 @@ export default function AdminUsersPage() {
         {totalPages > 1 && (
           <div className={styles.pagination}>
             <button
+              type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
               className="btn btn-sm"
+              aria-label="Página anterior"
               style={{ minWidth: 36, padding: '0.4rem 0.6rem' }}
             >
               <ChevronLeft size={16} />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`btn btn-sm ${p === page ? 'btn-primary' : ''}`}
-                style={{ minWidth: 36, padding: '0.4rem 0.75rem' }}
-              >
-                {p}
-              </button>
-            ))}
+            {(() => {
+              const pages: (number | string)[] = [];
+              if (totalPages <= 5) {
+                for (let i = 1; i <= totalPages; i++) pages.push(i);
+              } else if (page <= 3) {
+                pages.push(1, 2, 3, '...', totalPages);
+              } else if (page >= totalPages - 2) {
+                pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
+              } else {
+                pages.push(1, '...', page, '...', totalPages);
+              }
+
+              return pages.map((p, idx) => {
+                if (typeof p === 'string') {
+                  return (
+                    <span
+                      key={`dots-${idx}`}
+                      style={{
+                        padding: '0.4rem 0.5rem',
+                        color: '#94a3b8',
+                        fontSize: '0.85rem',
+                        userSelect: 'none',
+                      }}
+                    >
+                      ...
+                    </span>
+                  );
+                }
+
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPage(p)}
+                    className={`btn btn-sm ${p === page ? 'btn-primary' : ''}`}
+                    style={{ minWidth: 36, padding: '0.4rem 0.75rem' }}
+                  >
+                    {p}
+                  </button>
+                );
+              });
+            })()}
 
             <button
+              type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="btn btn-sm"
+              aria-label="Próxima página"
               style={{ minWidth: 36, padding: '0.4rem 0.6rem' }}
             >
               <ChevronRight size={16} />

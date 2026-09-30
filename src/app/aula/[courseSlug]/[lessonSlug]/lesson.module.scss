@@ -58,38 +58,111 @@
 
 .controlsCard {
   @include glass-card;
-  padding: 1.25rem;
-  @include flex-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  padding: 1.25rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+}
+
+.controlSlotLeft {
+  display: flex;
+  justify-content: flex-start;
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
+.controlSlotCenter {
+  display: flex;
+  justify-content: center;
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
+.controlSlotRight {
+  display: flex;
+  justify-content: flex-end;
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
+.emptySlot {
+  width: 100%;
+  height: 44px;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+// Botões rigorosamente padronizados com mesma altura, padding, fonte e peso
+.navBtn,
+.navBtnPrimary,
+.completeBtn,
+.completeBtnDone {
+  height: 44px;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: $font-display;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  line-height: 1;
+  box-sizing: border-box;
+  white-space: nowrap;
+
+  @include mobile {
+    width: 100%;
+  }
 }
 
 .navBtn {
   @include button-base;
-  padding: 0.45rem 1rem;
-  font-size: 0.85rem;
-  width: 100%;
-  max-width: 160px;
 }
 
 .navBtnPrimary {
   @include button-primary;
-  padding: 0.45rem 1rem;
-  font-size: 0.85rem;
-  width: 100%;
-  max-width: 160px;
 }
 
 .completeBtn {
-  @include button-primary;
-  width: 100%;
-  max-width: 240px;
+  @include button-base;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+
+  &:hover {
+    background: #d1fae5;
+    border-color: #6ee7b7;
+    color: #065f46;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+  }
 }
 
 .completeBtnDone {
   @include button-emerald;
-  width: 100%;
-  max-width: 240px;
+  cursor: default;
+  opacity: 0.95;
+
+  &:hover {
+    transform: none;
+  }
 }
 
 .aboutCard {

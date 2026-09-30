@@ -21,7 +21,8 @@ export interface Lesson {
   id: string | number;
   course_id?: string | number;
   courseId?: string | number;
-  courseSlug?: string;
+  course_slug?: string;
+  course_title?: string;
   title: string;
   slug: string;
   description: string;
