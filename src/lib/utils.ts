@@ -1,4 +1,7 @@
 export function secToMin(seconds: number): string {
+  if (!seconds || isNaN(seconds) || seconds < 0) {
+    return '00:00';
+  }
   const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
   const ss = String(Math.floor(seconds % 60)).padStart(2, '0');
   return `${mm}:${ss}`;
@@ -30,5 +33,6 @@ export function slugify(text: string): string {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9 -]/g, '')
     .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
