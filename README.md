@@ -1,138 +1,154 @@
 # 🎓 Veltro LMS - Frontend Next.js 16 (App Router)
 
-Plataforma moderna de cursos online construída com **Next.js 16**, **React 19**, **TypeScript**, **SCSS Modules** e arquitetura **BFF (Backend For Frontend)** com estética escura de alto padrão (*sleek dark luxury*) e foco em experiência do usuário (UX).
+Enterprise-grade Learning Management System (LMS) frontend web application built with **Next.js 16**, **React 19**, **TypeScript**, **SCSS Modules**, and a dedicated **Backend For Frontend (BFF)** architecture featuring clean high-end aesthetics and optimized user experience.
 
-> 🔗 **Backend Oficial:** Este frontend funciona em conjunto com a API REST desenvolvida em **NestJS**, **Prisma** e **PostgreSQL**: [lms-nest-postgres](https://github.com/Cr1stofe/lms-nest-postgres).
-
----
-
-## 🚀 Principais Recursos
-
-### 🔐 Autenticação & Controle de Acesso (RBAC)
-- **Perfis de Usuário:**
-  - **Administrador (`admin`):** Acesso total à plataforma, incluindo gestão de cursos, aulas e listagem/gestão de usuários.
-  - **Editor (`editor`):** Acesso restrito à gestão de cursos e aulas (sem acesso à listagem de usuários).
-  - **Aluno (`user`):** Acesso ao catálogo de cursos, aulas liberadas/matriculadas e emissão de certificados.
-  - **Público (`public`):** Visualização de cursos abertos e aulas com marcação gratuita (*free*).
-- **Proteção no Proxy (`proxy.ts`):** Redirecionamento instantâneo no servidor (Edge/Node.js) com **Zero Flicker**.
-- **Sessão Segura:** Autenticação baseada em cookies `httpOnly` (`__Secure-sid` e `lms_role`).
-- **Modal de Confirmação:** Confirmação explícita antes de encerrar a sessão do usuário.
-
-### 📚 Área do Aluno & Player de Vídeo
-- **Catálogo de Cursos:** Listagem dinâmica com cálculo de carga horária e total de aulas.
-- **Barreira de Acesso (*Lock Barrier*):** Bloqueio visual para aulas restritas a usuários deslogados.
-- **Player de Vídeo com Streaming:** Suporte a HTTP Range Requests (`206 Partial Content`) para reprodução fluida de arquivos de vídeo públicos e privados.
-- **Navegação & Conclusão:** Navegação entre aulas (Anterior / Próxima) e registro de progresso em tempo real.
-- **Certificados Oficiais:** Emissão automática de certificados ao concluir 100% do curso, com layout otimizado para impressão/PDF.
-
-### ⚙️ Painel Administrativo
-- **Formulários Validados:** Integração completa entre **React Hook Form** e **Zod** (`@hookform/resolvers/zod`) com mensagens de erro inline e tipagem estrita.
-- **Gerenciamento de Cursos:** Criação e edição com geração automática de slug e atualização reativa.
-- **Gerenciamento de Aulas:** Upload de arquivos de vídeo com indicação de visibilidade (*public* / *private*).
-- **Gestão de Usuários:** Busca em tempo real por nome/e-mail e paginação integrada.
-- **Notificações Toasts (Sonner):** Feedback flutuante em tempo real para ações de criação, edição e uploads.
+> 🔗 **Official Backend:** This frontend pairs with the enterprise **NestJS + PostgreSQL 18 + Prisma 7** API: [lms-nest-postgres](https://github.com/Cr1stofe/lms-nest-postgres).
 
 ---
 
-## 🛡️ Matriz de Permissões de Rotas
+## 🛠️ Architecture & Tech Stack
 
-| Rota | Público | Aluno (`user`) | Editor (`editor`) | Administrador (`admin`) |
+- **Framework:** [Next.js 16 (App Router / Turbopack)](https://nextjs.org/) (Server Components, Client Components, Edge/Node Proxies, Streaming & SSR)
+- **Core Library:** [React 19](https://react.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict typing across domain, stores, and components)
+- **Styling & Design System:** **SCSS Modules** (`.module.scss`), CSS Variables, Mixins, and Clean Light (Porcelain & Royal Cobalt) theme
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand) (Atomic decoupled stores for Auth and LMS domain)
+- **Forms & Validation:** [React Hook Form](https://react-hook-form.com/) integrated with [Zod](https://zod.dev/) via `@hookform/resolvers/zod`
+- **Testing Suite:** [Vitest](https://vitest.dev/) & [React Testing Library](https://testing-library.com/) (40 Unit & Integration test suites)
+- **UI Icons & Toasts:** [Lucide React](https://lucide.dev/) & [Sonner](https://sonner.emilkowal.ski/)
+- **Media & Streaming:** HTML5 Video Player with HTTP 206 Partial Content range request support and responsive fallback
+
+---
+
+## 🚀 Key Features
+
+### 🔐 Authentication & Role-Based Access Control (RBAC)
+- **User Roles:**
+  - **Administrator (`admin`):** Full platform control (Course & Lesson management, user directory search with pagination).
+  - **Editor (`editor`):** Course and lesson authoring access.
+  - **Student (`user`):** Enrolled courses catalog, lesson curriculum progression, and PDF certificate downloads.
+  - **Public / Visitor (`public`):** Public course syllabus overview and free preview lessons (*free tags*).
+- **Edge Route Protection:** Server-side auth gating with zero layout flicker.
+- **Secure Sessions:** Protected with `httpOnly` secure session cookies (`__Secure-sid`).
+
+### 📚 Learning Experience & Curriculum Player
+- **Dynamic Course Catalog:** Real-time syllabus duration counters and lesson progression indicators.
+- **Access Lock Barrier:** Clean visual gate for premium content prompting login or registration.
+- **Curriculum Controls:** Standardized navigation controls (Previous, Complete Lesson with semantic success feedback, Next / Course Syllabus).
+- **PDF Certificate Issuance:** Automated vector certificate view upon 100% course completion.
+
+### ⚙️ Admin Dashboard
+- **Course Management:** Reactive slug generation and instant catalog updates.
+- **Lesson Management:** Video storage path linkage and public/private flag toggles.
+- **User Directory:** Debounced real-time search by name/email with responsive truncated pagination.
+
+---
+
+## 🛡️ Route Permissions Matrix
+
+| Route | Public | Student (`user`) | Editor (`editor`) | Administrator (`admin`) |
 | :--- | :---: | :---: | :---: | :---: |
-| `/` (Home) | 🟢 Aberto | 🟢 Personalizado | 🟢 Painel Admin | 🟢 Painel Admin |
-| `/cursos` | 🟢 Aberto | 🟢 Aberto | 🟢 Aberto | 🟢 Aberto |
-| `/cursos/[slug]` | 🟢 Aberto | 🟢 Aberto | 🟢 Aberto | 🟢 Aberto |
-| `/aula/[courseSlug]/[lessonSlug]` | 🟡 Apenas Aulas Free | 🟢 Acesso Total | 🟢 Acesso Total | 🟢 Acesso Total |
-| `/certificados` | 🔴 Login | 🟢 Permitido | 🟢 Permitido | 🟢 Permitido |
-| `/admin/cursos` | 🔴 Login | 🔴 Redireciona `/cursos` | 🟢 Permitido | 🟢 Permitido |
-| `/admin/aulas` | 🔴 Login | 🔴 Redireciona `/cursos` | 🟢 Permitido | 🟢 Permitido |
-| `/admin/usuarios` | 🔴 Login | 🔴 Redireciona `/cursos` | 🔴 Redireciona `/admin/cursos` | 🟢 Permitido |
+| `/` (Home) | 🟢 Public | 🟢 Personalized | 🟢 Admin Dashboard | 🟢 Admin Dashboard |
+| `/cursos` (Catalog) | 🟢 Open | 🟢 Open | 🟢 Open | 🟢 Open |
+| `/cursos/[slug]` (Detail) | 🟢 Open | 🟢 Open | 🟢 Open | 🟢 Open |
+| `/aula/[courseSlug]/[lessonSlug]` | 🟡 Free Lessons Only | 🟢 Full Access | 🟢 Full Access | 🟢 Full Access |
+| `/certificados` | 🔴 Login Required | 🟢 Allowed | 🟢 Allowed | 🟢 Allowed |
+| `/admin/cursos` | 🔴 Login Required | 🔴 Redirects `/cursos` | 🟢 Allowed | 🟢 Allowed |
+| `/admin/aulas` | 🔴 Login Required | 🔴 Redirects `/cursos` | 🟢 Allowed | 🟢 Allowed |
+| `/admin/usuarios` | 🔴 Login Required | 🔴 Redirects `/cursos` | 🔴 Redirects `/admin/cursos` | 🟢 Allowed |
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🧪 Testing & Quality Assurance
 
-- **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
-- **Biblioteca Base:** [React 19](https://react.dev/)
-- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
-- **Estilização:** SCSS Modules (`.module.scss`), CSS Variables e Mixins responsivos
-- **Gerenciamento de Estado:** [Zustand](https://github.com/pmndrs/zustand)
-- **Formulários & Validação:** [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/) via `@hookform/resolvers`
-- **Notificações:** [Sonner](https://sonner.emilkowal.ski/)
-- **Ícones:** [Lucide React](https://lucide.dev/)
-- **Bundler & Build:** Turbopack
+The frontend includes a **Vitest + React Testing Library** test suite:
+
+```bash
+yarn test
+yarn test:watch
+```
+
+### 📋 Test Coverage Overview (40 Test Suites)
+- **Utils (`src/lib/utils.test.ts`):** `secToMin`, `formatDate`, `generateId`, and `slugify`.
+- **API Client (`src/lib/api-client.test.ts`):** `resolveVideoUrl` storage resolution.
+- **Zod Schemas (`src/lib/schemas/`):** Strict payload validation for auth and LMS operations.
+- **Zustand Stores (`src/stores/`):** Isolated tests for `useAuthStore` and `useLMSStore`.
+- **Services (`src/services/`):** API communication and mock contracts.
+- **UI Components (`src/components/`):** `VideoPlayer` rendering/error states and `Navbar` RBAC link rendering.
 
 ---
 
-## 📂 Estrutura do Projeto
+## 📂 Project Structure
 
 ```text
 src/
-├── app/                              # Rotas e páginas (App Router)
-│   ├── admin/                        # Painel Administrativo (Cursos, Aulas, Usuários)
-│   ├── api/                          # Route Handlers do BFF (Auth, LMS, Files)
-│   ├── aula/[courseSlug]/[lessonSlug]# Player de aula e navegação
-│   ├── certificados/                 # Visualização de certificados emitidos
-│   ├── cursos/                       # Catálogo e detalhes do curso
-│   ├── (auth)/                       # Login, Criar Conta, Recuperação de Senha
-│   ├── layout.tsx                    # Layout raiz com Toaster e fontes
-│   └── page.tsx                      # Home dinâmica SSR (Aluno vs Admin)
-├── components/                       # Componentes reutilizáveis
-│   ├── CourseCard/                   # Card de curso interativo
-│   ├── Footer/                       # Rodapé global
-│   ├── Navbar/                       # Header responsivo com perfil de usuário
-│   ├── ProgressBar/                  # Barra de progresso de conclusão
-│   ├── SessionInitializer/           # Sincronização inicial de sessão
-│   └── VideoPlayer/                  # Player de vídeo HTML5 com fallback
-├── lib/                              # Configurações, Schemas Zod e utilitários
-│   ├── config.ts                     # Centralização de variáveis de ambiente
-│   ├── api-client.ts                 # Cliente HTTP centralizado
-│   ├── types.ts                      # Tipagens globais do domínio
-│   └── schemas/                      # Schemas de validação Zod (Auth e LMS)
-├── services/                         # Camada de serviços e comunicação com API
-│   ├── authService.ts                # Operações de autenticação e sessão
-│   └── lmsService.ts                 # Operações de cursos, aulas e arquivos
-├── stores/                           # Stores globais Zustand
-│   ├── useAuthStore.ts               # Estado de autenticação e sessão
-│   └── useLMSStore.ts                # Estado de cursos e aulas
-├── styles/                           # Design System em SCSS
-│   ├── _variables.scss               # Cores, tipografia, espaçamentos e raios
-│   ├── _mixins.scss                  # Glassmorphism, cards, botões e responsividade
-│   ├── globals.scss                  # Estilos globais e resets
-│   └── admin.module.scss             # Estilização do painel administrativo
-└── proxy.ts                          # Proxy de roteamento e RBAC (Next.js 16)
+├── app/                              # Next.js App Router pages & route handlers
+│   ├── admin/                        # Admin Dashboard (Courses, Lessons, Users)
+│   ├── api/                          # BFF Proxy Route Handlers (Auth, LMS, Files)
+│   ├── aula/[courseSlug]/[lessonSlug]# Lesson player & curriculum navigation
+│   ├── certificados/                 # Earned certificates view
+│   ├── cursos/                       # Course catalog and syllabus detail
+│   ├── (auth)/                       # Login, Create Account, Password Recovery
+│   ├── layout.tsx                    # Root layout with Toaster & typography
+│   └── page.tsx                      # Dynamic home landing page
+├── components/                       # Reusable domain & UI components
+│   ├── CourseCard/                   # Interactive course card
+│   ├── Footer/                       # Global footer
+│   ├── Navbar/                       # Responsive navbar with user profile pill
+│   ├── ProgressBar/                  # Curriculum completion progress bar
+│   ├── SessionInitializer/           # Initial auth session sync
+│   └── VideoPlayer/                  # HTML5 video player with fallback states
+├── lib/                              # Core configuration, schemas, and types
+│   ├── config.ts                     # Centralized environment variables
+│   ├── api-client.ts                 # Typed HTTP client helper
+│   ├── types.ts                      # Domain TypeScript interfaces
+│   └── schemas/                      # Zod validation schemas (Auth & LMS)
+├── services/                         # Service layer communicating with API
+│   ├── authService.ts                # Session, login, registration operations
+│   └── lmsService.ts                 # Course, lesson, user, certificate operations
+├── stores/                           # Global Zustand atomic stores
+│   ├── useAuthStore.ts               # Authentication state & actions
+│   └── useLMSStore.ts                # Courses & lessons catalog state
+├── styles/                           # SCSS Design System & Tokens
+│   ├── _variables.scss               # Color tokens, fonts, radii, spacing scale
+│   ├── _mixins.scss                  # Glassmorphism, buttons, inputs, responsive breakpoints
+│   └── globals.scss                  # Global resets, typography, and utility classes
+└── test/                             # Testing configuration and global setup
+    └── setup.ts                      # Jest-DOM matchers and Next.js mocks
 ```
 
 ---
 
-## 📦 Como Rodar o Projeto Localmente
+## 🚦 Getting Started
 
-### 1. Pré-requisitos
-- [Node.js](https://nodejs.org/) (versão 18.17 ou superior)
-- [Yarn](https://yarnpkg.com/)
+### 1. Prerequisites
+- Node.js >= 24.x
+- Yarn >= 4.x
 
-### 2. Instalação das dependências
+### 2. Environment Setup
+Copy the example environment file:
+
 ```bash
-yarn install
+cp .env.example .env.local
 ```
 
-### 3. Configuração de Variáveis de Ambiente
-Crie um arquivo `.env.local` na raiz do projeto com o endereço da API do Backend:
-
+Configure your backend endpoint:
 ```env
 BACKEND_API_URL=https://localhost/api
 ```
 
-### 4. Executando em Modo de Desenvolvimento
+### 3. Development Server
+
 ```bash
 yarn dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+Visit [http://localhost:3001](http://localhost:3001) in your browser.
 
-### 5. Scripts Disponíveis
+### 4. Production Build & Validation
 
-- `yarn dev`: Inicia o servidor de desenvolvimento com Turbopack.
-- `yarn build`: Executa a verificação de tipos e compila a aplicação para produção.
-- `yarn start`: Executa o build de produção localmente.
-- `yarn lint`: Executa a verificação de regras de código com ESLint.
-- `yarn lint:fix`: Corrige automaticamente problemas identificados pelo linter.
+```bash
+yarn build
+yarn lint
+yarn test
+```
