@@ -34,7 +34,8 @@ describe('store: useAuthStore', () => {
           role: 'user',
         },
       },
-    } as any);
+      response: new Response(),
+    });
 
     const res = await useAuthStore.getState().login('student@example.com', 'P@ssw0rd123');
 
@@ -66,7 +67,10 @@ describe('store: useAuthStore', () => {
       role: 'admin',
     });
 
-    vi.mocked(authService.logout).mockResolvedValueOnce({} as any);
+    vi.mocked(authService.logout).mockResolvedValueOnce({
+      data: { success: true },
+      response: new Response(),
+    });
 
     await useAuthStore.getState().logout();
 
