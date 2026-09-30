@@ -97,6 +97,8 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
   };
 
   const videoUrl = resolveVideoUrl(lesson.video);
+  const courseTitle = lesson.course_title || courseSlug;
+  const effectiveCourseSlug = lesson.course_slug || courseSlug;
 
   if (!hasAccess) {
     return (
@@ -104,7 +106,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
         <nav className={styles.breadcrumb}>
           <Link href="/cursos">Cursos</Link>
           <ChevronRight size={14} />
-          <Link href={`/cursos/${courseSlug}`}>{courseSlug}</Link>
+          <Link href={`/cursos/${effectiveCourseSlug}`}>{courseTitle}</Link>
           <ChevronRight size={14} />
           <span className={styles.current}>{lesson.title}</span>
         </nav>
@@ -148,7 +150,10 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
               <span>Criar Conta Gratuita</span>
             </Link>
 
-            <Link href={`/cursos/${courseSlug}`} className="btn btn-sm">
+            <Link
+              href={`/cursos/${effectiveCourseSlug}`}
+              className="btn btn-sm"
+            >
               <ArrowLeft size={16} />
               <span>Voltar para o Curso</span>
             </Link>
@@ -170,7 +175,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
       <nav className={styles.breadcrumb}>
         <Link href="/cursos">Cursos</Link>
         <ChevronRight size={14} />
-        <Link href={`/cursos/${courseSlug}`}>{courseSlug}</Link>
+        <Link href={`/cursos/${effectiveCourseSlug}`}>{courseTitle}</Link>
         <ChevronRight size={14} />
         <span className={styles.current}>{lesson.title}</span>
       </nav>
@@ -200,13 +205,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
       <VideoPlayer src={videoUrl} title={lesson.title} />
 
       <div className={styles.controlsCard}>
-        <div
-          style={{
-            flex: '1 1 auto',
-            display: 'flex',
-            justifyContent: 'flex-start',
-          }}
-        >
+        <div className={styles.controlSlotLeft}>
           {lesson.prev ? (
             <Link
               href={`/aula/${courseSlug}/${lesson.prev}`}
@@ -216,17 +215,11 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
               <span>Anterior</span>
             </Link>
           ) : (
-            <div style={{ width: 80 }} />
+            <div className={styles.emptySlot} />
           )}
         </div>
 
-        <div
-          style={{
-            flex: '2 1 auto',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
+        <div className={styles.controlSlotCenter}>
           {role === 'user' && (
             <button
               onClick={handleComplete}
@@ -235,7 +228,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
                 completed ? styles.completeBtnDone : styles.completeBtn
               }
             >
-              <CheckCircle2 size={18} />
+              <CheckCircle2 size={16} />
               <span>
                 {completed
                   ? 'Concluída ✓'
@@ -247,13 +240,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
           )}
         </div>
 
-        <div
-          style={{
-            flex: '1 1 auto',
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
+        <div className={styles.controlSlotRight}>
           {lesson.next ? (
             <Link
               href={`/aula/${courseSlug}/${lesson.next}`}
@@ -264,7 +251,7 @@ export default function LessonPlayerPage({ params }: LessonPageProps) {
             </Link>
           ) : (
             <Link
-              href={`/cursos/${courseSlug}`}
+              href={`/cursos/${effectiveCourseSlug}`}
               className={styles.navBtnPrimary}
             >
               <span>Ver Grade</span>

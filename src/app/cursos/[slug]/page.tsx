@@ -180,14 +180,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
           </div>
         )}
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            alignItems: 'center',
-          }}
-        >
+        <div className={styles.actionsRow}>
           {isCompleted ? (
             <>
               {certificateId ? (
@@ -211,7 +204,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                   href={`/aula/${course.slug}/${lessons[0].slug}`}
                   className={styles.secondaryBtn}
                 >
-                  <Play size={16} />
+                  <Play size={18} />
                   <span>Rever Aulas</span>
                 </Link>
               )}
@@ -241,7 +234,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 href={`/login?redirect=/cursos/${course.slug}`}
                 className={styles.secondaryBtn}
               >
-                <LogIn size={16} />
+                <LogIn size={18} />
                 <span>Entrar na Plataforma</span>
               </Link>
             </>
@@ -255,7 +248,7 @@ export default function CourseDetailPage({ params }: CourseDetailsProps) {
                 <span>Fazer Login para Assistir</span>
               </Link>
               <Link href="/criar-conta" className={styles.secondaryBtn}>
-                <UserPlus size={16} />
+                <UserPlus size={18} />
                 <span>Criar Conta Grátis</span>
               </Link>
             </>

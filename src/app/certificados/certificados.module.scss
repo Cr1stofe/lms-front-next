@@ -10,12 +10,20 @@
 .headerCard {
   @include glass-card;
   padding: 2.5rem;
+
+  @include mobile {
+    padding: 1.5rem 1.25rem;
+  }
 }
 
 .headerContent {
   @include flex-between;
   flex-wrap: wrap;
   gap: 1.5rem;
+
+  @include mobile {
+    gap: 1rem;
+  }
 }
 
 .badgeEmerald {
@@ -29,6 +37,10 @@
 .title {
   font-size: 2.25rem;
   margin-bottom: 0.5rem;
+
+  @include mobile {
+    font-size: 1.65rem;
+  }
 }
 
 .statsCounter {
@@ -37,6 +49,14 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: $radius-lg;
   text-align: center;
+
+  @include mobile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+  }
 }
 
 .statsNumber {
@@ -44,6 +64,10 @@
   font-weight: 700;
   color: $accent-emerald-light;
   font-family: $font-serif;
+
+  @include mobile {
+    font-size: 1.5rem;
+  }
 }
 
 .statsLabel {
@@ -65,6 +89,12 @@
   padding: 1.25rem 1.75rem;
   gap: 1rem;
   flex-wrap: wrap;
+
+  @include mobile {
+    padding: 1.25rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .certLeft {
@@ -80,11 +110,16 @@
   background: rgba(16, 185, 129, 0.15);
   color: $accent-emerald-light;
   @include flex-center;
+  flex-shrink: 0;
 }
 
 .certTitle {
   font-size: 1.2rem;
   margin-bottom: 0.2rem;
+
+  @include mobile {
+    font-size: 1.05rem;
+  }
 }
 
 .certDate {
@@ -94,8 +129,14 @@
 
 .downloadBtn {
   @include button-primary;
-  padding: 0.45rem 1rem;
+  padding: 0.55rem 1rem;
   font-size: 0.85rem;
+
+  @include mobile {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
 }
 
 .emptyState {

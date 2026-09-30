@@ -106,22 +106,50 @@
   }
 }
 
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+
+  @include mobile {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.startBtn,
+.certificateBtn,
+.secondaryBtn {
+  height: 46px;
+  min-height: 46px;
+  padding: 0 1.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: $font-display;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  line-height: 1;
+  box-sizing: border-box;
+  white-space: nowrap;
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
 .startBtn {
   @include button-primary;
-  padding: 0.85rem 1.75rem;
-  font-size: 1rem;
 }
 
 .certificateBtn {
   @include button-emerald;
-  padding: 0.85rem 1.75rem;
-  font-size: 1rem;
 }
 
 .secondaryBtn {
   @include button-base;
-  padding: 0.85rem 1.5rem;
-  font-size: 0.95rem;
   background: #ffffff;
   border-color: $border-subtle;
 

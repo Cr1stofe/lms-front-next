@@ -60,7 +60,7 @@ export default function AdminLessonsPage() {
   const filteredLessons = useMemo(() => {
     if (selectedCourseFilter === 'all') return adminLessons;
     return adminLessons.filter((lesson) => {
-      const cSlug = lesson.courseSlug || (lesson as Lesson & { course_slug?: string }).course_slug;
+      const cSlug = lesson.course_slug;
       return cSlug === selectedCourseFilter;
     });
   }, [adminLessons, selectedCourseFilter]);
@@ -81,9 +81,8 @@ export default function AdminLessonsPage() {
     } else {
       const lesson = adminLessons.find((l) => String(l.id) === selectedLessonId);
       if (lesson) {
-        const rawLesson = lesson as Lesson & { course_slug?: string };
         reset({
-          courseSlug: lesson.courseSlug || rawLesson.course_slug || '',
+          courseSlug: lesson.course_slug || '',
           slug: lesson.slug || '',
           title: lesson.title || '',
           description: lesson.description || '',
@@ -231,10 +230,7 @@ export default function AdminLessonsPage() {
                   <>
                     {courses.map((course) => {
                       const courseLessons = adminLessons.filter((l) => {
-                        const cSlug =
-                          l.courseSlug ||
-                          (l as Lesson & { course_slug?: string }).course_slug;
-                        return cSlug === course.slug;
+                        return l.course_slug === course.slug;
                       });
 
                       if (courseLessons.length === 0) return null;
@@ -252,10 +248,7 @@ export default function AdminLessonsPage() {
                     {adminLessons.filter(
                       (l) =>
                         !courses.some(
-                          (c) =>
-                            c.slug ===
-                            (l.courseSlug ||
-                              (l as Lesson & { course_slug?: string }).course_slug)
+                          (c) => c.slug === l.course_slug
                         )
                     ).length > 0 && (
                       <optgroup label="Outros / Sem Curso">
@@ -263,11 +256,7 @@ export default function AdminLessonsPage() {
                           .filter(
                             (l) =>
                               !courses.some(
-                                (c) =>
-                                  c.slug ===
-                                  (l.courseSlug ||
-                                    (l as Lesson & { course_slug?: string })
-                                      .course_slug)
+                                (c) => c.slug === l.course_slug
                               )
                           )
                           .map((lesson) => (
