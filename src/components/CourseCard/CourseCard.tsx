@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { Course } from '@/lib/types';
 import { Clock, BookOpen, ArrowRight } from 'lucide-react';

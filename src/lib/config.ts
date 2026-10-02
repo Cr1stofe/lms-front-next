@@ -3,3 +3,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export const BACKEND_URL = (process.env.BACKEND_API_URL || '').replace(/\/$/, '');
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://veltro-lms.com').replace(/\/$/, '');
