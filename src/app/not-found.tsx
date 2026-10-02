@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { Home, Compass, BookOpen, Award } from 'lucide-react';
 import styles from '@/styles/error-pages.module.scss';

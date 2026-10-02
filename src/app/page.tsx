@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import CourseCard from '@/components/CourseCard';
@@ -26,8 +25,8 @@ async function getFeaturedCourses(): Promise<Course[]> {
       const data = await res.json();
       return Array.isArray(data) ? data : [];
     }
-  } catch (e) {
-    console.error('Erro ao carregar cursos na home', e);
+  } catch {
+    // Return empty array fallback if backend is unavailable during build
   }
   return [];
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertCircle, RotateCcw, Home, BookOpen } from 'lucide-react';
 import styles from '@/styles/error-pages.module.scss';
